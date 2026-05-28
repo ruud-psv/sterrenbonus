@@ -1,0 +1,9 @@
+[
+  {"id": "1", "name": "Jumbo Bon", "active": true},
+  {"id": "2", "name": "XXL Nutrition Bon", "active": true},
+  {"id": "3", "name": "Ikigai Bon", "active": true},
+  {"id": "4", "name": "NH Hotel Bon", "active": true},
+  {"id": "5", "name": "Sports Gift Card", "active": true},
+  {"id": "6", "name": "Ultimate Gift Card", "active": true},
+  {"id": "7", "name": "Vrije keuze", "active": true}
+]
