@@ -71,9 +71,14 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
   }, []);
 
   useEffect(() => {
+    // Re-initialize stars when returning to idle so celebrate/spinning state doesn't linger
+    if (phase === 'idle') {
+      const canvas = canvasRef.current;
+      if (canvas) initStars(canvas.width, canvas.height);
+    }
     phaseRef.current = phase;
     phaseStartRef.current = performance.now();
-  }, [phase]);
+  }, [phase, initStars]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -103,14 +108,12 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
       const cx = width / 2;
       const cy = height / 2;
 
-      // Background
-      if (currentPhase === 'spinning') {
-        ctx.fillStyle = 'rgba(10, 10, 26, 0.10)';
-      } else if (currentPhase === 'celebrate') {
-        ctx.fillStyle = 'rgba(10, 10, 26, 0.08)';
-      } else {
-        ctx.fillStyle = 'rgba(10, 10, 26, 0.12)';
-      }
+      // Clear canvas fully first to prevent persistent trails, then draw
+      // a semi-transparent background to create a short (~150ms) motion-blur fade.
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = currentPhase === 'spinning'
+        ? 'rgba(13, 13, 13, 0.35)'
+        : 'rgba(13, 13, 13, 0.45)';
       ctx.fillRect(0, 0, width, height);
 
       const stars = starsRef.current;

@@ -5,7 +5,7 @@ import { motion, useAnimation } from 'framer-motion';
 import type { Prize } from '@/app/types';
 
 const ITEM_H = 96;
-const SPIN_REVOLUTIONS = 7;
+const SPIN_REVOLUTIONS = 8;
 
 interface Props {
   prizes: Prize[];
@@ -19,7 +19,6 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
   const n = prizes.length;
 
   const faceAngle = n > 0 ? 360 / n : 0;
-  // Radius so adjacent faces are separated by ~ITEM_H on the cylinder surface
   const radius = n > 0 ? Math.round((ITEM_H * n) / (2 * Math.PI)) : 0;
   const windowH = ITEM_H * 3;
 
@@ -27,11 +26,22 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
     if (!spinning || !winner || n === 0) return;
     const winnerIdx = prizes.findIndex(p => p.id === winner.id);
     const finalAngle = SPIN_REVOLUTIONS * 360 + winnerIdx * faceAngle;
+    // Stop ~45% of a face before the winner for the snap effect
+    const preSnapAngle = finalAngle - faceAngle * 0.45;
+
     ctrl.set({ rotateX: 0 });
+
+    // Phase 1: main spin — 10s, decelerates to just before winner
     ctrl.start({
-      rotateX: finalAngle,
-      transition: { duration: 10, ease: [0.05, 0.95, 0.08, 1.0] },
-    }).then(onDone);
+      rotateX: preSnapAngle,
+      transition: { duration: 10, ease: [0.12, 0.9, 0.25, 1.0] },
+    }).then(() =>
+      // Phase 2: spring snap onto winner — quick settle with a slight bounce
+      ctrl.start({
+        rotateX: finalAngle,
+        transition: { type: 'spring', stiffness: 450, damping: 28, mass: 0.5 },
+      })
+    ).then(onDone);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spinning, winner]);
 
@@ -90,7 +100,6 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
           justifyContent: 'center',
         }}
       >
-        {/* Rotating drum — Framer Motion drives rotateX */}
         <motion.div
           animate={ctrl}
           initial={{ rotateX: 0 }}
@@ -110,7 +119,6 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                // Place each face at its angle on the cylinder
                 transform: `rotateX(${-i * faceAngle}deg) translateZ(${radius}px)`,
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
