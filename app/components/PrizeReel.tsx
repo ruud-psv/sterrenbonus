@@ -1,14 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import type { Prize } from '@/app/types';
 
-const ITEM_H = 88;
-const VISIBLE = 5;
-const CENTER = Math.floor(VISIBLE / 2); // 2
-const REEL_H = ITEM_H * VISIBLE;       // 440
-const REPS = 15;
+const ITEM_H = 96;
+const SPIN_REVOLUTIONS = 7;
 
 interface Props {
   prizes: Prize[];
@@ -19,74 +16,124 @@ interface Props {
 
 export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
   const ctrl = useAnimation();
+  const n = prizes.length;
 
-  const items = useMemo(
-    () => Array.from({ length: REPS }, () => prizes).flat(),
-    [prizes]
-  );
+  const faceAngle = n > 0 ? 360 / n : 0;
+  // Radius so adjacent faces are separated by ~ITEM_H on the cylinder surface
+  const radius = n > 0 ? Math.round((ITEM_H * n) / (2 * Math.PI)) : 0;
+  const windowH = ITEM_H * 3;
 
   useEffect(() => {
-    if (!spinning || !winner || prizes.length === 0) return;
-
-    const winnerPos = prizes.findIndex(p => p.id === winner.id);
-    const targetRep = REPS - 4;
-    const targetIdx = targetRep * prizes.length + winnerPos;
-    // Shift so the winner lands in the center slot
-    const targetY = -(targetIdx * ITEM_H) + CENTER * ITEM_H;
-
-    ctrl.set({ y: 0 });
+    if (!spinning || !winner || n === 0) return;
+    const winnerIdx = prizes.findIndex(p => p.id === winner.id);
+    const finalAngle = SPIN_REVOLUTIONS * 360 + winnerIdx * faceAngle;
+    ctrl.set({ rotateX: 0 });
     ctrl.start({
-      y: targetY,
-      transition: {
-        duration: 5,
-        ease: [0.05, 0.95, 0.08, 1.0],
-      },
+      rotateX: finalAngle,
+      transition: { duration: 10, ease: [0.05, 0.95, 0.08, 1.0] },
     }).then(onDone);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spinning, winner]);
 
+  if (n === 0) return null;
+
   return (
     <div
-      className="relative mx-auto"
-      style={{ height: REEL_H, width: 520, overflow: 'hidden' }}
+      style={{
+        position: 'relative',
+        width: 540,
+        height: windowH,
+        borderRadius: 16,
+        border: '2px solid rgba(200, 16, 46, 0.7)',
+        boxShadow: [
+          '0 0 0 1px rgba(200, 16, 46, 0.2)',
+          '0 0 40px rgba(200, 16, 46, 0.4)',
+          '0 0 80px rgba(200, 16, 46, 0.15)',
+          'inset 0 0 40px rgba(200, 16, 46, 0.06)',
+        ].join(', '),
+        overflow: 'hidden',
+        background: 'rgba(8, 8, 20, 0.85)',
+      }}
     >
       {/* Top fade */}
       <div
-        className="absolute inset-x-0 top-0 z-10 h-28 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, #0A0A1A 20%, transparent)' }}
+        className="absolute inset-x-0 top-0 z-10 pointer-events-none"
+        style={{ height: ITEM_H, background: 'linear-gradient(to bottom, rgba(8,8,20,1) 0%, rgba(8,8,20,0.5) 60%, transparent 100%)' }}
       />
       {/* Bottom fade */}
       <div
-        className="absolute inset-x-0 bottom-0 z-10 h-28 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, #0A0A1A 20%, transparent)' }}
+        className="absolute inset-x-0 bottom-0 z-10 pointer-events-none"
+        style={{ height: ITEM_H, background: 'linear-gradient(to top, rgba(8,8,20,1) 0%, rgba(8,8,20,0.5) 60%, transparent 100%)' }}
       />
 
       {/* Center selection window */}
       <div
         className="absolute inset-x-0 z-10 pointer-events-none"
         style={{
-          top: CENTER * ITEM_H,
+          top: ITEM_H,
           height: ITEM_H,
-          borderTop: '2px solid rgba(200, 16, 46, 0.7)',
-          borderBottom: '2px solid rgba(200, 16, 46, 0.7)',
-          background: 'rgba(200, 16, 46, 0.06)',
-          boxShadow: '0 0 40px rgba(200, 16, 46, 0.2) inset',
+          borderTop: '1px solid rgba(200, 16, 46, 0.55)',
+          borderBottom: '1px solid rgba(200, 16, 46, 0.55)',
+          background: 'rgba(200, 16, 46, 0.05)',
         }}
       />
 
-      <motion.div animate={ctrl} initial={{ y: 0 }}>
-        {items.map((prize, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-center px-8"
-            style={{ height: ITEM_H }}
-          >
-            <span className="text-2xl font-bold tracking-wide text-center text-white leading-snug">
-              {prize.name}
-            </span>
-          </div>
-        ))}
-      </motion.div>
+      {/* 3D perspective wrapper */}
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          perspective: '700px',
+          perspectiveOrigin: '50% 50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Rotating drum — Framer Motion drives rotateX */}
+        <motion.div
+          animate={ctrl}
+          initial={{ rotateX: 0 }}
+          style={{
+            transformStyle: 'preserve-3d',
+            position: 'relative',
+            width: '100%',
+            height: ITEM_H,
+          }}
+        >
+          {prizes.map((prize, i) => (
+            <div
+              key={prize.id}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                // Place each face at its angle on the cylinder
+                transform: `rotateX(${-i * faceAngle}deg) translateZ(${radius}px)`,
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.04em',
+                  color: '#ffffff',
+                  textAlign: 'center',
+                  lineHeight: 1.2,
+                  padding: '0 2rem',
+                  textShadow: '0 0 20px rgba(255,255,255,0.3)',
+                }}
+              >
+                {prize.name}
+              </span>
+            </div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }
