@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import StarCanvas from '@/app/components/StarCanvas';
 import PrizeReel from '@/app/components/PrizeReel';
@@ -95,23 +96,14 @@ export default function DrawPage() {
         >
           {/* PSV wordmark */}
           <div className="flex items-center justify-center gap-4 mb-4">
-            {/* Crest placeholder — bold P S V shield */}
-            <div
-              style={{
-                width: 56,
-                height: 64,
-                background: 'var(--psv-red)',
-                clipPath: 'polygon(50% 0%, 100% 15%, 100% 70%, 50% 100%, 0% 70%, 0% 15%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.02em', fontFamily: 'var(--font-psv)' }}>
-                PSV
-              </span>
-            </div>
+            <Image
+              src="/psv-logo-white.svg"
+              alt="PSV"
+              width={72}
+              height={72}
+              priority
+              style={{ flexShrink: 0 }}
+            />
             <div className="text-left">
               <div
                 style={{
