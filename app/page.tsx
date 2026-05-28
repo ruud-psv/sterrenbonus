@@ -160,26 +160,30 @@ export default function DrawPage() {
                 onDone={handleReelDone}
               />
 
-              <AnimatePresence>
-                {phase === 'done' && (
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    style={{
-                      fontSize: '2rem',
-                      fontWeight: 900,
-                      letterSpacing: '0.04em',
-                      textTransform: 'uppercase',
-                      color: '#ffffff',
-                      fontFamily: 'var(--font-psv)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Gefeliciteerd!
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              {/* Fixed-height spacer keeps reel position stable when text appears */}
+              <div style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <AnimatePresence>
+                  {phase === 'done' && (
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      style={{
+                        fontSize: '2rem',
+                        fontWeight: 900,
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        color: '#ffffff',
+                        fontFamily: 'var(--font-psv)',
+                        textAlign: 'center',
+                        margin: 0,
+                      }}
+                    >
+                      Gefeliciteerd!
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

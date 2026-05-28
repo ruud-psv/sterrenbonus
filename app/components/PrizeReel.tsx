@@ -26,20 +26,31 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
     if (!spinning || !winner || n === 0) return;
     const winnerIdx = prizes.findIndex(p => p.id === winner.id);
     const finalAngle = SPIN_REVOLUTIONS * 360 + winnerIdx * faceAngle;
-    // Stop ~45% of a face before the winner for the snap effect
-    const preSnapAngle = finalAngle - faceAngle * 0.45;
+
+    // ~60% of the time: overshoot past winner so the drum snaps BACK (more tension).
+    // ~40%: stop just before winner and snap forward.
+    const goesBackward = Math.random() < 0.6;
+    const overshoot = faceAngle * (0.28 + Math.random() * 0.42);
+    const preSnapAngle = goesBackward
+      ? finalAngle + overshoot   // passed the winner → spring pulls back
+      : finalAngle - overshoot;  // just before winner → spring pushes forward
 
     ctrl.set({ rotateX: 0 });
 
-    // Phase 1: main spin — 10s, decelerates to just before winner
+    // Phase 1: main spin — 10s, decelerates to pre-snap position
     ctrl.start({
       rotateX: preSnapAngle,
       transition: { duration: 10, ease: [0.12, 0.9, 0.25, 1.0] },
     }).then(() =>
-      // Phase 2: spring snap onto winner — quick settle with a slight bounce
+      // Phase 2: spring snap — bouncier when going backward for extra drama
       ctrl.start({
         rotateX: finalAngle,
-        transition: { type: 'spring', stiffness: 450, damping: 28, mass: 0.5 },
+        transition: {
+          type: 'spring',
+          stiffness: goesBackward ? 300 : 450,
+          damping:   goesBackward ? 18  : 28,
+          mass:      goesBackward ? 0.8 : 0.5,
+        },
       })
     ).then(onDone);
   // eslint-disable-next-line react-hooks/exhaustive-deps
