@@ -38,6 +38,11 @@ html, body {
   font-family: var(--font-psv);
 }
 
+body {
+  outline: 15px solid #C8102E;
+  outline-offset: -15px;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--psv-red) #1a1a1a;

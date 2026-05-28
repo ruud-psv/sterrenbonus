@@ -210,8 +210,8 @@ export default function DrawPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4 }}
-            className="absolute bottom-0 left-0 right-0 z-10 overflow-hidden"
-            style={{ background: '#C8102E' }}
+            className="overflow-hidden"
+            style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100000, background: '#C8102E' }}
           >
             <div className="overflow-hidden" style={{ padding: '0.65rem 0' }}>
               <div className="ticker-track">

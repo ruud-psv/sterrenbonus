@@ -15,14 +15,6 @@ export default function RootLayout({
     <html lang="nl" className="h-full">
       <body className="h-full bg-[#0D0D0D] text-white antialiased">
         {children}
-        {/* Red border frame — fixed overlay, all pages */}
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          border: '15px solid #C8102E',
-          pointerEvents: 'none',
-          zIndex: 99999,
-        }} />
       </body>
     </html>
   );
