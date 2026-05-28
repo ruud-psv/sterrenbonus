@@ -53,7 +53,7 @@ export default function DrawPage() {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center select-none"
+      className="relative w-full h-screen overflow-hidden select-none"
       style={{ background: '#0D0D0D', fontFamily: 'var(--font-psv)' }}
     >
       <StarCanvas phase={canvasPhase} />
@@ -85,64 +85,37 @@ export default function DrawPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Main content ── */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-10 w-full px-8">
-
-        {/* Logo / header */}
-        <motion.div
-          className="text-center"
-          animate={phase === 'spinning' ? { opacity: 0.35, scale: 0.92 } : { opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* PSV wordmark */}
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <Image
-              src="/psv-logo-white.svg"
-              alt="PSV"
-              width={72}
-              height={72}
-              priority
-              style={{ flexShrink: 0 }}
-            />
-            <div className="text-left">
-              <div
-                style={{
-                  fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)',
-                  fontWeight: 900,
-                  lineHeight: 0.9,
-                  letterSpacing: '-0.01em',
-                  color: '#ffffff',
-                  fontFamily: 'var(--font-psv)',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Sterren
-                <span style={{ color: 'var(--psv-red)' }}>bonus</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Divider */}
+      {/* ── Header — fixed at top, never moves or fades ── */}
+      <div
+        className="absolute top-0 left-0 right-0 z-10 flex justify-center pt-10"
+      >
+        <div className="flex items-center gap-4">
+          <Image
+            src="/psv-logo-white.svg"
+            alt="PSV"
+            width={72}
+            height={72}
+            priority
+            style={{ flexShrink: 0 }}
+          />
           <div
             style={{
-              height: 2,
-              background: 'linear-gradient(90deg, transparent 0%, var(--psv-red) 30%, var(--psv-red) 70%, transparent 100%)',
-              marginBottom: '0.6rem',
-            }}
-          />
-          <p
-            style={{
-              fontSize: '0.7rem',
-              letterSpacing: '0.35em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.3)',
+              fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)',
+              fontWeight: 900,
+              lineHeight: 0.9,
+              letterSpacing: '-0.01em',
+              color: '#ffffff',
               fontFamily: 'var(--font-psv)',
+              textTransform: 'uppercase',
             }}
           >
-            Kwartaal prijzentrekking
-          </p>
-        </motion.div>
+            Sterrenbonus
+          </div>
+        </div>
+      </div>
 
+      {/* ── Center content — always viewport-centered ── */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
         {error && (
           <div
             className="px-6 py-3 rounded text-sm font-bold"
@@ -150,7 +123,6 @@ export default function DrawPage() {
               background: 'rgba(200,16,46,0.15)',
               border: '1px solid rgba(200,16,46,0.5)',
               color: '#ff6b6b',
-              fontFamily: 'var(--font-psv)',
             }}
           >
             {error}
@@ -166,20 +138,8 @@ export default function DrawPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.88 }}
               transition={{ duration: 0.35 }}
-              className="flex flex-col items-center gap-4"
             >
               <DrawButton onClick={handleDraw} disabled={activePrizes.length === 0} />
-              <p
-                style={{
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.25em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.2)',
-                  fontFamily: 'var(--font-psv)',
-                }}
-              >
-                {activePrizes.length} prijs{activePrizes.length !== 1 ? 'en' : ''} beschikbaar
-              </p>
             </motion.div>
           )}
 
@@ -202,58 +162,22 @@ export default function DrawPage() {
 
               <AnimatePresence>
                 {phase === 'done' && (
-                  <motion.div
+                  <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="text-center"
-                  >
-                    <p
-                      style={{
-                        fontSize: '0.75rem',
-                        letterSpacing: '0.3em',
-                        textTransform: 'uppercase',
-                        color: 'var(--psv-gold)',
-                        fontWeight: 700,
-                        marginBottom: '0.3rem',
-                        fontFamily: 'var(--font-psv)',
-                      }}
-                    >
-                      Gefeliciteerd!
-                    </p>
-                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.95rem', fontFamily: 'var(--font-psv)' }}>
-                      De winnaar ontvangt:{' '}
-                      <span style={{ color: '#fff', fontWeight: 800 }}>{winner?.name}</span>
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {showReset && (
-                  <motion.button
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    onClick={handleReset}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.97 }}
                     style={{
-                      background: 'transparent',
-                      border: '2px solid rgba(200, 16, 46, 0.6)',
-                      color: 'rgba(255,255,255,0.75)',
-                      cursor: 'pointer',
-                      padding: '0.9rem 2.5rem',
-                      borderRadius: 4,
-                      fontSize: '0.75rem',
-                      fontWeight: 800,
-                      letterSpacing: '0.25em',
+                      fontSize: '2rem',
+                      fontWeight: 900,
+                      letterSpacing: '0.04em',
                       textTransform: 'uppercase',
+                      color: '#ffffff',
                       fontFamily: 'var(--font-psv)',
+                      textAlign: 'center',
                     }}
                   >
-                    Opnieuw trekken
-                  </motion.button>
+                    Gefeliciteerd!
+                  </motion.p>
                 )}
               </AnimatePresence>
             </motion.div>
@@ -261,7 +185,7 @@ export default function DrawPage() {
         </AnimatePresence>
       </div>
 
-      {/* ── Prize ticker ── */}
+      {/* ── Prize ticker — bottom, idle only ── */}
       <AnimatePresence>
         {phase === 'idle' && activePrizes.length > 0 && (
           <motion.div
@@ -298,7 +222,43 @@ export default function DrawPage() {
         )}
       </AnimatePresence>
 
-      {/* Admin link */}
+      {/* ── Opnieuw trekken — icon only, fixed bottom-left ── */}
+      <AnimatePresence>
+        {showReset && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.7 }}
+            transition={{ duration: 0.3 }}
+            onClick={handleReset}
+            whileHover={{ scale: 1.12 }}
+            whileTap={{ scale: 0.92 }}
+            title="Opnieuw trekken"
+            style={{
+              position: 'fixed',
+              bottom: '1.5rem',
+              left: '1.5rem',
+              zIndex: 20,
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              background: 'rgba(200,16,46,0.15)',
+              border: '1.5px solid rgba(200,16,46,0.5)',
+              color: 'rgba(255,255,255,0.7)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* ── Admin link — fixed bottom-right ── */}
       <div className="fixed bottom-5 right-6 z-20">
         <Link
           href="/admin"
