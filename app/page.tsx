@@ -87,22 +87,31 @@ export default function DrawPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Header — fixed at top, never moves or fades ── */}
+      {/* ── Header — black frame, border-radius only bottom-left & bottom-right ── */}
       <div
-        className="absolute top-0 left-0 right-0 z-10 flex justify-center pt-10"
+        className="absolute top-0 left-0 right-0 z-10 flex justify-center"
       >
-        <div className="flex items-center gap-4">
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '1rem',
+            background: '#000000',
+            padding: '1rem 2rem 1.2rem',
+            borderRadius: '0 0 20px 20px',
+          }}
+        >
           <Image
             src="/psv-logo-white.svg"
             alt="PSV"
-            width={72}
-            height={72}
+            width={68}
+            height={68}
             priority
             style={{ flexShrink: 0 }}
           />
           <div
             style={{
-              fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)',
+              fontSize: 'clamp(2rem, 5vw, 4rem)',
               fontWeight: 700,
               fontStyle: 'italic',
               lineHeight: 0.9,
@@ -193,39 +202,26 @@ export default function DrawPage() {
         </AnimatePresence>
       </div>
 
-      {/* ── Prize ticker — bottom, idle only ── */}
+      {/* ── Prize ticker — full-width red bar at bottom, idle only ── */}
       <AnimatePresence>
         {phase === 'idle' && activePrizes.length > 0 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute bottom-10 left-0 right-0 z-10 overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.4 }}
+            className="absolute bottom-0 left-0 right-0 z-10 overflow-hidden"
+            style={{ background: '#C8102E' }}
           >
-            <div
-              style={{
-                height: 1,
-                background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.4), transparent)',
-                marginBottom: '0.75rem',
-              }}
-            />
-            <div className="overflow-hidden">
+            <div className="overflow-hidden" style={{ padding: '0.65rem 0' }}>
               <div className="ticker-track">
                 {[...activePrizes, ...activePrizes, ...activePrizes, ...activePrizes].map((prize, i) => (
-                  <span key={i} className="ticker-item">
+                  <span key={i} className="ticker-item" style={{ color: '#ffffff' }}>
                     ★&nbsp;&nbsp;{prize.name}
                   </span>
                 ))}
               </div>
             </div>
-            <div
-              style={{
-                height: 1,
-                background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.4), transparent)',
-                marginTop: '0.75rem',
-              }}
-            />
           </motion.div>
         )}
       </AnimatePresence>
