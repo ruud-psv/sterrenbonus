@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 
-export type DrawPhase = 'idle' | 'buildup' | 'vortex' | 'reveal';
+export type DrawPhase = 'idle' | 'spinning' | 'celebrate';
 
 interface StarCanvasProps {
   phase: DrawPhase;
@@ -104,13 +104,9 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
       const cy = height / 2;
 
       // Background
-      if (currentPhase === 'buildup') {
-        const progress = Math.min(phaseElapsed / 1500, 1);
-        const alpha = 0.08 + progress * 0.06;
-        ctx.fillStyle = `rgba(10, 10, 26, ${alpha})`;
-      } else if (currentPhase === 'vortex') {
-        ctx.fillStyle = 'rgba(10, 10, 26, 0.15)';
-      } else if (currentPhase === 'reveal') {
+      if (currentPhase === 'spinning') {
+        ctx.fillStyle = 'rgba(10, 10, 26, 0.10)';
+      } else if (currentPhase === 'celebrate') {
         ctx.fillStyle = 'rgba(10, 10, 26, 0.08)';
       } else {
         ctx.fillStyle = 'rgba(10, 10, 26, 0.12)';
@@ -128,81 +124,56 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
           star.opacity += Math.sin(now * 0.001 + i) * 0.003;
           star.opacity = Math.max(0.1, Math.min(1, star.opacity));
 
-          // Wrap around
           if (star.x < -5) star.x = width + 5;
           if (star.x > width + 5) star.x = -5;
           if (star.y < -5) star.y = height + 5;
           if (star.y > height + 5) star.y = -5;
 
-        } else if (currentPhase === 'buildup') {
-          const progress = Math.min(phaseElapsed / 1500, 1);
-          const speedMult = 1 + progress * 8;
-
-          // Move toward center
+        } else if (currentPhase === 'spinning') {
+          // Stars orbit faster — more energy
           const dx = cx - star.x;
           const dy = cy - star.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const moveSpeed = star.speed * speedMult * delta * 0.05;
+          const speedMult = 4;
 
-          if (dist > 5) {
-            star.x += (dx / dist) * moveSpeed;
-            star.y += (dy / dist) * moveSpeed;
-          } else {
-            // Respawn from edge
-            const edge = Math.floor(Math.random() * 4);
-            if (edge === 0) { star.x = Math.random() * width; star.y = -5; }
-            else if (edge === 1) { star.x = width + 5; star.y = Math.random() * height; }
-            else if (edge === 2) { star.x = Math.random() * width; star.y = height + 5; }
-            else { star.x = -5; star.y = Math.random() * height; }
-          }
-
-          star.opacity = 0.4 + progress * 0.6;
-
-        } else if (currentPhase === 'vortex') {
-          const progress = Math.min(phaseElapsed / 1000, 1);
-          const speedMult = 3 + progress * 12;
-
-          // Spiral inward
-          const dx = cx - star.x;
-          const dy = cy - star.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist > 3) {
-            const towardCenter = star.speed * speedMult * delta * 0.05;
+          if (dist > 10) {
             const tangential = star.speed * speedMult * delta * 0.04;
             const nx = dx / dist;
             const ny = dy / dist;
-            star.x += nx * towardCenter - ny * tangential;
-            star.y += ny * towardCenter + nx * tangential;
+            star.x += -ny * tangential;
+            star.y += nx * tangential;
+            star.x += star.driftX * delta * 0.08;
+            star.y += star.driftY * delta * 0.04;
           } else {
-            // Respawn from edge
             const angle = Math.random() * Math.PI * 2;
-            const r = Math.max(width, height) * 0.6;
+            const r = Math.max(width, height) * 0.5;
             star.x = cx + Math.cos(angle) * r;
             star.y = cy + Math.sin(angle) * r;
           }
 
-          star.opacity = 0.6 + progress * 0.4;
-          star.size = star.size * (1 + delta * 0.002);
+          star.opacity = Math.min(1, star.opacity + 0.01);
+          if (star.x < -5) star.x = width + 5;
+          if (star.x > width + 5) star.x = -5;
+          if (star.y < -5) star.y = height + 5;
+          if (star.y > height + 5) star.y = -5;
 
-        } else if (currentPhase === 'reveal') {
-          const progress = Math.min(phaseElapsed / 1000, 1);
-
-          // Explode outward from center
-          if (phaseElapsed < 50) {
-            // Reset to center
-            star.x = cx + randomBetween(-20, 20);
-            star.y = cy + randomBetween(-20, 20);
+        } else if (currentPhase === 'celebrate') {
+          // Explode outward once, then drift
+          if (phaseElapsed < 80) {
+            star.x = cx + randomBetween(-30, 30);
+            star.y = cy + randomBetween(-30, 30);
             star.angle = Math.random() * Math.PI * 2;
-            star.speed = randomBetween(3, 12);
+            star.speed = randomBetween(4, 14);
             star.size = randomBetween(1, 4);
+            star.opacity = 1;
           }
 
-          const explodeSpeed = star.speed * (1 + progress * 3) * delta * 0.08;
+          const progress = Math.min(phaseElapsed / 1200, 1);
+          const explodeSpeed = star.speed * (1 + progress * 2) * delta * 0.07;
           star.x += Math.cos(star.angle) * explodeSpeed;
           star.y += Math.sin(star.angle) * explodeSpeed;
-          star.opacity = Math.max(0, 1 - progress * 0.8);
-          star.size = Math.max(0.3, star.size - delta * 0.01);
+          star.opacity = Math.max(0.05, 1 - progress * 0.85);
+          star.size = Math.max(0.3, star.size - delta * 0.008);
         }
 
         // Draw star
@@ -210,7 +181,7 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
         ctx.globalAlpha = Math.max(0, Math.min(1, star.opacity));
         ctx.fillStyle = star.color;
 
-        if (star.size > 1.5 && (star.color === GOLD || currentPhase === 'reveal')) {
+        if (star.size > 1.5 && (star.color === GOLD || currentPhase === 'celebrate')) {
           // Draw 4-pointed star shape for larger particles
           ctx.translate(star.x, star.y);
           ctx.beginPath();
@@ -240,48 +211,6 @@ export default function StarCanvas({ phase }: StarCanvasProps) {
           ctx.fill();
         }
 
-        ctx.restore();
-      }
-
-      // Draw pulsing ring during buildup
-      if (currentPhase === 'buildup') {
-        const progress = Math.min(phaseElapsed / 1500, 1);
-        const pulse = Math.sin(phaseElapsed * 0.006) * 0.5 + 0.5;
-        const radius = 60 + progress * 80 + pulse * 20;
-        const alpha = 0.3 + pulse * 0.4;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(200, 16, 46, ${alpha})`;
-        ctx.lineWidth = 2 + pulse * 3;
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = PSV_RED;
-        ctx.stroke();
-
-        // Second ring
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius * 1.4, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(200, 16, 46, ${alpha * 0.4})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // Draw vortex ring
-      if (currentPhase === 'vortex') {
-        const progress = Math.min(phaseElapsed / 1000, 1);
-        const pulse = Math.sin(phaseElapsed * 0.015) * 0.5 + 0.5;
-        const radius = 120 - progress * 100;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(cx, cy, Math.max(5, radius), 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(200, 16, 46, ${0.6 + pulse * 0.4})`;
-        ctx.lineWidth = 3;
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = PSV_RED;
-        ctx.stroke();
         ctx.restore();
       }
 

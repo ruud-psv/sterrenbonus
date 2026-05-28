@@ -99,6 +99,27 @@ body {
   animation: cardRevealGlow 1s ease-out forwards;
 }
 
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker 18s linear infinite;
+}
+
+.ticker-item {
+  display: inline-block;
+  padding: 0 2.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
 .prize-name-shimmer {
   background: linear-gradient(
     90deg,
