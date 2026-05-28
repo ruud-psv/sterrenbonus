@@ -96,7 +96,7 @@ export default function DrawPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '1rem',
-            background: '#000000',
+            background: '#C8102E',
             padding: '1rem 2rem 1.2rem',
             borderRadius: '0 0 20px 20px',
           }}
@@ -111,7 +111,7 @@ export default function DrawPage() {
           />
           <div
             style={{
-              fontSize: 'clamp(2rem, 5vw, 4rem)',
+              fontSize: 'clamp(1.3rem, 3.25vw, 2.6rem)',
               fontWeight: 700,
               fontStyle: 'italic',
               lineHeight: 0.9,
