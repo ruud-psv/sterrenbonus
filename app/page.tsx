@@ -53,11 +53,20 @@ export default function DrawPage() {
   return (
     <div
       className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center select-none"
-      style={{ background: '#0A0A1A' }}
+      style={{ background: '#0D0D0D', fontFamily: 'var(--font-psv)' }}
     >
       <StarCanvas phase={canvasPhase} />
 
-      {/* Radial glow on done */}
+      {/* Subtle red radial bg */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(200,16,46,0.07) 0%, transparent 70%)',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Done: stronger glow */}
       <AnimatePresence>
         {phase === 'done' && (
           <motion.div
@@ -68,50 +77,88 @@ export default function DrawPage() {
             transition={{ duration: 0.8 }}
             className="fixed inset-0 pointer-events-none"
             style={{
-              background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,16,46,0.18) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse 65% 55% at 50% 50%, rgba(200,16,46,0.22) 0%, transparent 70%)',
               zIndex: 1,
             }}
           />
         )}
       </AnimatePresence>
 
-      {/* Main content */}
+      {/* ── Main content ── */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-10 w-full px-8">
 
-        {/* Header */}
+        {/* Logo / header */}
         <motion.div
           className="text-center"
-          animate={phase === 'spinning' ? { opacity: 0.4, scale: 0.92 } : { opacity: 1, scale: 1 }}
+          animate={phase === 'spinning' ? { opacity: 0.35, scale: 0.92 } : { opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <h1
-            className="font-black tracking-tight leading-none"
+          {/* PSV wordmark */}
+          <div className="flex items-center justify-center gap-4 mb-4">
+            {/* Crest placeholder — bold P S V shield */}
+            <div
+              style={{
+                width: 56,
+                height: 64,
+                background: 'var(--psv-red)',
+                clipPath: 'polygon(50% 0%, 100% 15%, 100% 70%, 50% 100%, 0% 70%, 0% 15%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff', letterSpacing: '-0.02em', fontFamily: 'var(--font-psv)' }}>
+                PSV
+              </span>
+            </div>
+            <div className="text-left">
+              <div
+                style={{
+                  fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)',
+                  fontWeight: 900,
+                  lineHeight: 0.9,
+                  letterSpacing: '-0.01em',
+                  color: '#ffffff',
+                  fontFamily: 'var(--font-psv)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Sterren
+                <span style={{ color: 'var(--psv-red)' }}>bonus</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div
             style={{
-              fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-              background: 'linear-gradient(135deg, #ffffff 30%, #C8102E 70%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 30px rgba(200,16,46,0.4))',
+              height: 2,
+              background: 'linear-gradient(90deg, transparent 0%, var(--psv-red) 30%, var(--psv-red) 70%, transparent 100%)',
+              marginBottom: '0.6rem',
+            }}
+          />
+          <p
+            style={{
+              fontSize: '0.7rem',
+              letterSpacing: '0.35em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.3)',
+              fontFamily: 'var(--font-psv)',
             }}
           >
-            ⭐ STERRENBONUS
-          </h1>
-          <p
-            className="mt-2 text-sm tracking-[0.3em] uppercase font-medium"
-            style={{ color: 'rgba(255,255,255,0.35)' }}
-          >
-            PSV — Prijzentrekking
+            Kwartaal prijzentrekking
           </p>
         </motion.div>
 
         {error && (
           <div
-            className="px-6 py-3 rounded-xl text-sm font-medium"
+            className="px-6 py-3 rounded text-sm font-bold"
             style={{
               background: 'rgba(200,16,46,0.15)',
-              border: '1px solid rgba(200,16,46,0.4)',
+              border: '1px solid rgba(200,16,46,0.5)',
               color: '#ff6b6b',
+              fontFamily: 'var(--font-psv)',
             }}
           >
             {error}
@@ -119,31 +166,36 @@ export default function DrawPage() {
         )}
 
         <AnimatePresence mode="wait">
-          {/* IDLE: draw button */}
+          {/* IDLE */}
           {phase === 'idle' && (
             <motion.div
               key="draw-area"
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85 }}
+              exit={{ opacity: 0, scale: 0.88 }}
               transition={{ duration: 0.35 }}
-              className="flex flex-col items-center gap-3"
+              className="flex flex-col items-center gap-4"
             >
               <DrawButton onClick={handleDraw} disabled={activePrizes.length === 0} />
               <p
-                className="text-xs tracking-widest uppercase"
-                style={{ color: 'rgba(255,255,255,0.2)' }}
+                style={{
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.25em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.2)',
+                  fontFamily: 'var(--font-psv)',
+                }}
               >
                 {activePrizes.length} prijs{activePrizes.length !== 1 ? 'en' : ''} beschikbaar
               </p>
             </motion.div>
           )}
 
-          {/* SPINNING + DONE: reel */}
+          {/* SPINNING + DONE */}
           {(phase === 'spinning' || phase === 'done') && (
             <motion.div
               key="reel-area"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
@@ -159,17 +211,27 @@ export default function DrawPage() {
               <AnimatePresence>
                 {phase === 'done' && (
                   <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     className="text-center"
                   >
-                    <p className="text-[#FFD700] text-lg font-bold tracking-widest uppercase mb-1">
-                      🎉 Gefeliciteerd!
+                    <p
+                      style={{
+                        fontSize: '0.75rem',
+                        letterSpacing: '0.3em',
+                        textTransform: 'uppercase',
+                        color: 'var(--psv-gold)',
+                        fontWeight: 700,
+                        marginBottom: '0.3rem',
+                        fontFamily: 'var(--font-psv)',
+                      }}
+                    >
+                      Gefeliciteerd!
                     </p>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem' }}>
+                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.95rem', fontFamily: 'var(--font-psv)' }}>
                       De winnaar ontvangt:{' '}
-                      <span className="text-white font-bold">{winner?.name}</span>
+                      <span style={{ color: '#fff', fontWeight: 800 }}>{winner?.name}</span>
                     </p>
                   </motion.div>
                 )}
@@ -178,18 +240,24 @@ export default function DrawPage() {
               <AnimatePresence>
                 {showReset && (
                   <motion.button
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     onClick={handleReset}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.97 }}
-                    className="rounded-full font-semibold text-base tracking-wider uppercase px-10 py-4"
                     style={{
                       background: 'transparent',
                       border: '2px solid rgba(200, 16, 46, 0.6)',
-                      color: 'rgba(255,255,255,0.8)',
+                      color: 'rgba(255,255,255,0.75)',
                       cursor: 'pointer',
+                      padding: '0.9rem 2.5rem',
+                      borderRadius: 4,
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.25em',
+                      textTransform: 'uppercase',
+                      fontFamily: 'var(--font-psv)',
                     }}
                   >
                     Opnieuw trekken
@@ -201,7 +269,7 @@ export default function DrawPage() {
         </AnimatePresence>
       </div>
 
-      {/* Prize ticker — only in idle */}
+      {/* ── Prize ticker ── */}
       <AnimatePresence>
         {phase === 'idle' && activePrizes.length > 0 && (
           <motion.div
@@ -211,34 +279,48 @@ export default function DrawPage() {
             transition={{ duration: 0.5 }}
             className="absolute bottom-10 left-0 right-0 z-10 overflow-hidden"
           >
-            <p
-              className="text-center text-xs tracking-[0.3em] uppercase mb-3"
-              style={{ color: 'rgba(255,255,255,0.2)' }}
-            >
-              Te winnen
-            </p>
+            <div
+              style={{
+                height: 1,
+                background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.4), transparent)',
+                marginBottom: '0.75rem',
+              }}
+            />
             <div className="overflow-hidden">
               <div className="ticker-track">
-                {/* Triple the list for a seamless loop */}
                 {[...activePrizes, ...activePrizes, ...activePrizes, ...activePrizes].map((prize, i) => (
                   <span key={i} className="ticker-item">
-                    ⭐ {prize.name}
+                    ★&nbsp;&nbsp;{prize.name}
                   </span>
                 ))}
               </div>
             </div>
+            <div
+              style={{
+                height: 1,
+                background: 'linear-gradient(90deg, transparent, rgba(200,16,46,0.4), transparent)',
+                marginTop: '0.75rem',
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Admin link */}
-      <div className="fixed bottom-6 right-8 z-20">
+      <div className="fixed bottom-5 right-6 z-20">
         <Link
           href="/admin"
-          className="text-xs tracking-widest uppercase transition-colors"
-          style={{ color: 'rgba(255,255,255,0.15)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.5)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.15)'; }}
+          style={{
+            fontSize: '0.6rem',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.12)',
+            textDecoration: 'none',
+            fontFamily: 'var(--font-psv)',
+            transition: 'color 0.2s',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.45)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.12)'; }}
         >
           Admin
         </Link>

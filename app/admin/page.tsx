@@ -107,25 +107,20 @@ export default function AdminPage() {
   return (
     <div
       className="min-h-screen px-6 py-10"
-      style={{ background: '#0A0A1A' }}
+      style={{ background: '#0D0D0D', fontFamily: 'var(--font-psv)' }}
     >
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
             <h1
-              className="text-3xl font-black tracking-tight"
-              style={{
-                background: 'linear-gradient(135deg, #fff 30%, #C8102E 70%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
+              className="text-3xl font-black tracking-tight uppercase"
+              style={{ color: '#fff', fontFamily: 'var(--font-psv)', letterSpacing: '0.04em' }}
             >
-              ⭐ Admin Panel
+              <span style={{ color: 'var(--psv-red)' }}>PSV</span> Admin
             </h1>
-            <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
-              PSV Sterrenbonus — Prijzenbeheer
+            <p className="text-xs mt-1 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--font-psv)' }}>
+              Sterrenbonus — Prijzenbeheer
             </p>
           </div>
           <Link

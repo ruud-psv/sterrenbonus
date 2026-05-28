@@ -43,7 +43,7 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
         position: 'relative',
         width: 540,
         height: windowH,
-        borderRadius: 16,
+        borderRadius: 4,
         border: '2px solid rgba(200, 16, 46, 0.7)',
         boxShadow: [
           '0 0 0 1px rgba(200, 16, 46, 0.2)',
@@ -119,13 +119,15 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
               <span
                 style={{
                   fontSize: '1.75rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.04em',
+                  fontWeight: 900,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
                   color: '#ffffff',
                   textAlign: 'center',
                   lineHeight: 1.2,
                   padding: '0 2rem',
-                  textShadow: '0 0 20px rgba(255,255,255,0.3)',
+                  fontFamily: 'var(--font-psv)',
+                  textShadow: '0 0 20px rgba(255,255,255,0.25)',
                 }}
               >
                 {prize.name}

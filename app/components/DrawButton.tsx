@@ -12,25 +12,39 @@ export default function DrawButton({ onClick, disabled = false }: DrawButtonProp
     <motion.button
       onClick={onClick}
       disabled={disabled}
-      whileHover={!disabled ? { scale: 1.06 } : {}}
+      whileHover={!disabled ? { scale: 1.05 } : {}}
       whileTap={!disabled ? { scale: 0.97 } : {}}
-      className="btn-draw relative overflow-hidden rounded-full font-black text-2xl tracking-[0.15em] uppercase text-white"
+      className="btn-draw"
       style={{
-        minWidth: 240,
-        paddingTop: 22,
-        paddingBottom: 22,
-        paddingLeft: 56,
-        paddingRight: 56,
-        background: 'linear-gradient(135deg, #C8102E, #e8102e)',
+        minWidth: 260,
+        padding: '1.3rem 3.5rem',
+        background: disabled
+          ? 'rgba(200,16,46,0.35)'
+          : 'linear-gradient(160deg, #e8102e 0%, #C8102E 50%, #9B0020 100%)',
+        border: 'none',
+        borderRadius: 3,
         cursor: disabled ? 'not-allowed' : 'pointer',
+        color: '#ffffff',
+        fontSize: '1.5rem',
+        fontWeight: 900,
+        letterSpacing: '0.2em',
+        textTransform: 'uppercase' as const,
+        fontFamily: 'var(--font-psv)',
+        position: 'relative' as const,
+        overflow: 'hidden',
         opacity: disabled ? 0.5 : 1,
       }}
     >
+      {/* Shine sweep */}
       <span
-        className="absolute inset-0 rounded-full pointer-events-none"
-        style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%)' }}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%)',
+          pointerEvents: 'none',
+        }}
       />
-      <span className="relative">TREKKEN</span>
+      <span style={{ position: 'relative' }}>TREKKEN</span>
     </motion.button>
   );
 }
