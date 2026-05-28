@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import StarCanvas from '@/app/components/StarCanvas';
 import PrizeReel from '@/app/components/PrizeReel';
 import DrawButton from '@/app/components/DrawButton';
+import Confetti from '@/app/components/Confetti';
 import type { Prize } from '@/app/types';
 
 type Phase = 'idle' | 'spinning' | 'done';
@@ -57,6 +58,7 @@ export default function DrawPage() {
       style={{ background: '#0D0D0D', fontFamily: 'var(--font-psv)' }}
     >
       <StarCanvas phase={canvasPhase} />
+      <Confetti fire={phase === 'done'} />
 
       {/* Subtle red radial bg */}
       <div
