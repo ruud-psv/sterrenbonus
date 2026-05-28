@@ -101,11 +101,12 @@ export default function DrawPage() {
           <div
             style={{
               fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)',
-              fontWeight: 900,
+              fontWeight: 700,
+              fontStyle: 'italic',
               lineHeight: 0.9,
-              letterSpacing: '-0.01em',
+              letterSpacing: '0.01em',
               color: '#ffffff',
-              fontFamily: 'var(--font-psv)',
+              fontFamily: 'PSVBranding, var(--font-psv)',
               textTransform: 'uppercase',
             }}
           >
@@ -169,12 +170,13 @@ export default function DrawPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5 }}
                       style={{
-                        fontSize: '2rem',
-                        fontWeight: 900,
-                        letterSpacing: '0.04em',
+                        fontSize: '2.5rem',
+                        fontWeight: 700,
+                        fontStyle: 'italic',
+                        letterSpacing: '0.02em',
                         textTransform: 'uppercase',
                         color: '#ffffff',
-                        fontFamily: 'var(--font-psv)',
+                        fontFamily: 'PSVBranding, var(--font-psv)',
                         textAlign: 'center',
                         margin: 0,
                       }}

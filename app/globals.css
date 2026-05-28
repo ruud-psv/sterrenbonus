@@ -9,6 +9,15 @@
   font-display: swap;
 }
 
+/* PSV Branding Bold Italic */
+@font-face {
+  font-family: 'PSVBranding';
+  src: url('/fonts/PSVBrandingBoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --psv-red:    #C8102E;
   --psv-red-dk: #9B0020;

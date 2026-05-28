@@ -137,15 +137,16 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
             >
               <span
                 style={{
-                  fontSize: '1.75rem',
-                  fontWeight: 900,
-                  letterSpacing: '0.05em',
+                  fontSize: '1.9rem',
+                  fontWeight: 700,
+                  fontStyle: 'italic',
+                  letterSpacing: '0.03em',
                   textTransform: 'uppercase',
                   color: '#ffffff',
                   textAlign: 'center',
                   lineHeight: 1.2,
                   padding: '0 2rem',
-                  fontFamily: 'var(--font-psv)',
+                  fontFamily: 'PSVBranding, var(--font-psv)',
                   textShadow: '0 0 20px rgba(255,255,255,0.25)',
                 }}
               >
