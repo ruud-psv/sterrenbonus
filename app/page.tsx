@@ -57,6 +57,22 @@ export default function DrawPage() {
       className="relative w-full h-screen overflow-hidden select-none"
       style={{ background: '#0D0D0D', fontFamily: 'var(--font-psv)' }}
     >
+      {/* Stadium background */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          backgroundImage: 'url(https://www.psv.nl/upload_mm/c/c/8/32619638-ad88-4814-a0e1-670c92c85cf3_1c7daccd2b90c864d538e68f3b0f1fc5_1600x600.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 30%',
+          zIndex: 0,
+        }}
+      />
+      {/* Dark overlay to keep the stadium subtle */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{ background: 'rgba(13,13,13,0.72)', zIndex: 0 }}
+      />
+
       <StarCanvas phase={canvasPhase} />
       <Confetti fire={phase === 'done'} />
 
