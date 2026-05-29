@@ -254,20 +254,22 @@ export default function AdminPage() {
                   <button
                     onClick={() => toggleActive(prize.id)}
                     disabled={saving}
-                    className="relative flex-shrink-0 w-11 h-6 rounded-full transition-all duration-300 focus:outline-none"
+                    className="relative flex-shrink-0 w-11 h-6 rounded-full focus:outline-none"
                     style={{
-                      background: prize.active
-                        ? '#C8102E'
-                        : 'rgba(255,255,255,0.12)',
+                      background: prize.active ? '#C8102E' : 'rgba(255,255,255,0.12)',
+                      transition: 'background 0.2s',
                       cursor: saving ? 'default' : 'pointer',
                     }}
                     title={prize.active ? 'Deactiveren' : 'Activeren'}
                   >
-                    <motion.span
-                      animate={{ x: prize.active ? 22 : 2 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                    <span
                       className="absolute top-1 w-4 h-4 rounded-full bg-white"
-                      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                      style={{
+                        left: 2,
+                        transform: prize.active ? 'translateX(20px)' : 'translateX(0px)',
+                        transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1)',
+                        boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                      }}
                     />
                   </button>
 
