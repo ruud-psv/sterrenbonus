@@ -56,7 +56,6 @@ export async function POST(request: Request) {
       contentType: "application/json",
       addRandomSuffix: false,
       allowOverwrite: true,
-      cacheControlMaxAge: 0,
     });
 
     return NextResponse.json({ ok: true });
