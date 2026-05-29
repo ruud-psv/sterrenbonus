@@ -27,7 +27,7 @@ export default function DrawButton({ onClick, disabled = false }: DrawButtonProp
         color: '#ffffff',
         fontSize: '1.5rem',
         fontWeight: 900,
-        letterSpacing: '0.2em',
+        letterSpacing: 'normal',
         textTransform: 'uppercase' as const,
         fontFamily: 'var(--font-psv)',
         position: 'relative' as const,
@@ -44,7 +44,7 @@ export default function DrawButton({ onClick, disabled = false }: DrawButtonProp
           pointerEvents: 'none',
         }}
       />
-      <span style={{ position: 'relative' }}>TREKKEN</span>
+      <span style={{ position: 'relative' }}>START</span>
     </motion.button>
   );
 }
