@@ -60,7 +60,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Failed to save prizes:", err);
-    return NextResponse.json({ error: "Failed to save prizes" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Failed to save prizes:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
