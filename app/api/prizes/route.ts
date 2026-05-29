@@ -17,7 +17,10 @@ const DEFAULT_PRIZES: Prize[] = [
 async function readPrizes(): Promise<Prize[]> {
   const { blobs } = await list({ prefix: BLOB_PATHNAME });
   if (blobs.length === 0) return DEFAULT_PRIZES;
-  const res = await fetch(blobs[0].url, { cache: "no-store" });
+  const res = await fetch(blobs[0].downloadUrl, {
+    headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
+    cache: "no-store",
+  });
   return res.json() as Promise<Prize[]>;
 }
 
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
     }
 
     await put(BLOB_PATHNAME, JSON.stringify(prizes), {
-      access: "public",
+      access: "private",
       contentType: "application/json",
       addRandomSuffix: false,
       allowOverwrite: true,
