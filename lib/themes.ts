@@ -60,10 +60,49 @@ export const themes: Record<string, Theme> = {
   },
 };
 
+// Fields editable via the admin UI — structural fields (id, prizesKey, etc.) are not overridable
+export interface ThemeOverrides {
+  colors?: {
+    primary?: string;
+    gold?: string;
+    bg?: string;
+  };
+  logo?: string;
+  backgroundImage?: string;
+  backgroundPosition?: string;
+  showStars?: boolean;
+  appTitle?: string;
+}
+
 export const DEFAULT_THEME_ID = 'psv';
 
 export function getTheme(id: string): Theme {
   return themes[id] ?? themes[DEFAULT_THEME_ID];
+}
+
+function autoDarken(hex: string): string {
+  const { r, g, b } = hexToRgb(hex);
+  const darken = (v: number) => Math.max(0, Math.round(v * 0.72)).toString(16).padStart(2, '0');
+  return `#${darken(r)}${darken(g)}${darken(b)}`;
+}
+
+export function mergeTheme(base: Theme, overrides: ThemeOverrides): Theme {
+  const primaryOverride = overrides.colors?.primary;
+  return {
+    ...base,
+    appTitle: overrides.appTitle ?? base.appTitle,
+    logo: overrides.logo ?? base.logo,
+    backgroundImage: overrides.backgroundImage ?? base.backgroundImage,
+    backgroundPosition: overrides.backgroundPosition ?? base.backgroundPosition,
+    showStars: overrides.showStars ?? base.showStars,
+    colors: {
+      ...base.colors,
+      primary: primaryOverride ?? base.colors.primary,
+      primaryDark: primaryOverride ? autoDarken(primaryOverride) : base.colors.primaryDark,
+      gold: overrides.colors?.gold ?? base.colors.gold,
+      bg: overrides.colors?.bg ?? base.colors.bg,
+    },
+  };
 }
 
 export function hexToRgb(hex: string): { r: number; g: number; b: number } {

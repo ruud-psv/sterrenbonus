@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import StarCanvas from '@/app/components/StarCanvas';
 import PrizeReel from '@/app/components/PrizeReel';
@@ -148,13 +147,13 @@ export default function DrawPage({ theme }: DrawPageProps) {
             borderRadius: '0 0 20px 20px',
           }}
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={theme.logo}
             alt={theme.label}
             width={theme.logoSize}
             height={theme.logoSize}
-            priority
-            style={{ flexShrink: 0 }}
+            style={{ flexShrink: 0, objectFit: 'contain' }}
           />
           <div
             style={{
