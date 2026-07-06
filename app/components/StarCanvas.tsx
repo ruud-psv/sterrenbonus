@@ -6,6 +6,7 @@ export type DrawPhase = 'idle' | 'spinning' | 'celebrate';
 
 interface StarCanvasProps {
   phase: DrawPhase;
+  colors?: { primary: string; gold: string };
 }
 
 interface Star {
@@ -22,29 +23,17 @@ interface Star {
   color: string;
 }
 
-const PSV_RED = '#C8102E';
-const WHITE = '#FFFFFF';
-const GOLD = '#FFD700';
-
 function randomBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-function randomColor() {
-  const r = Math.random();
-  if (r < 0.55) return WHITE;
-  if (r < 0.80) return PSV_RED;
-  return GOLD;
-}
-
-// 4-pointed star, always star-shaped
-function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, outerR: number, rotation: number, color: string) {
+function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, outerR: number, rotation: number, color: string, glowColors: Set<string>) {
   const innerR = outerR * 0.38;
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rotation);
 
-  if (color === PSV_RED || color === GOLD) {
+  if (glowColors.has(color)) {
     ctx.shadowBlur = outerR * 4;
     ctx.shadowColor = color;
   }
@@ -61,10 +50,22 @@ function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, outerR: n
   ctx.restore();
 }
 
-export default function StarCanvas({ phase: _phase }: StarCanvasProps) {
+export default function StarCanvas({ phase: _phase, colors }: StarCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const starsRef = useRef<Star[]>([]);
   const animFrameRef = useRef<number>(0);
+
+  const primaryColor = colors?.primary ?? '#C8102E';
+  const goldColor = colors?.gold ?? '#FFD700';
+  const WHITE = '#FFFFFF';
+  const glowColors = new Set([primaryColor, goldColor]);
+
+  const randomColor = useCallback(() => {
+    const r = Math.random();
+    if (r < 0.55) return WHITE;
+    if (r < 0.80) return primaryColor;
+    return goldColor;
+  }, [primaryColor, goldColor]);
 
   const initStars = useCallback((width: number, height: number) => {
     const count = Math.floor((width * height) / 7000);
@@ -81,7 +82,7 @@ export default function StarCanvas({ phase: _phase }: StarCanvasProps) {
       rotationSpeed: randomBetween(-0.003, 0.003),
       color: randomColor(),
     }));
-  }, []);
+  }, [randomColor]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -111,16 +112,13 @@ export default function StarCanvas({ phase: _phase }: StarCanvasProps) {
       ctx.clearRect(0, 0, width, height);
 
       for (const star of starsRef.current) {
-        // Always gentle float — same in every phase
         star.x += star.driftX * delta * 0.05;
         star.y += star.driftY * delta * 0.05;
         star.rotation += star.rotationSpeed * delta;
 
-        // Twinkle
         const twinkle = Math.sin(t * star.opacitySpeed + star.opacityPhase);
         const opacity = Math.max(0.06, Math.min(0.92, star.opacity + twinkle * 0.18));
 
-        // Wrap edges
         if (star.x < -star.outerR * 2) star.x = width + star.outerR * 2;
         if (star.x > width + star.outerR * 2) star.x = -star.outerR * 2;
         if (star.y < -star.outerR * 2) star.y = height + star.outerR * 2;
@@ -129,7 +127,7 @@ export default function StarCanvas({ phase: _phase }: StarCanvasProps) {
         ctx.save();
         ctx.globalAlpha = opacity;
         ctx.fillStyle = star.color;
-        drawStar(ctx, star.x, star.y, star.outerR, star.rotation, star.color);
+        drawStar(ctx, star.x, star.y, star.outerR, star.rotation, star.color, glowColors);
         ctx.restore();
       }
 
@@ -142,7 +140,7 @@ export default function StarCanvas({ phase: _phase }: StarCanvasProps) {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [initStars]);
+  }, [initStars, glowColors]);
 
   return (
     <canvas

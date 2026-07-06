@@ -25,6 +25,10 @@
   --bg:         #0D0D0D;
   --bg-card:    #131313;
   --font-psv:   'PSVText', 'Arial Black', Arial, sans-serif;
+  /* theme-aware glow variables — overridden per theme via inline style */
+  --theme-r: 200;
+  --theme-g: 16;
+  --theme-b: 46;
 }
 
 @theme inline {
@@ -48,14 +52,14 @@ html, body {
 @keyframes glowPulse {
   0%, 100% {
     box-shadow:
-      0 0 20px rgba(200, 16, 46, 0.55),
-      0 0 50px rgba(200, 16, 46, 0.25);
+      0 0 20px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.55),
+      0 0 50px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.25);
   }
   50% {
     box-shadow:
-      0 0 35px rgba(200, 16, 46, 0.85),
-      0 0 80px rgba(200, 16, 46, 0.45),
-      0 0 140px rgba(200, 16, 46, 0.2);
+      0 0 35px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.85),
+      0 0 80px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.45),
+      0 0 140px rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.2);
   }
 }
 

@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { put, list } from "@vercel/blob";
 import type { Prize } from "@/app/types";
+import { getTheme } from "@/lib/themes";
 
-const BLOB_PATHNAME = "prizes.json";
-
-const DEFAULT_PRIZES: Prize[] = [
+const PSV_DEFAULT_PRIZES: Prize[] = [
   { id: "1", name: "Jumbo Bon", active: true },
   { id: "2", name: "XXL Nutrition Bon", active: true },
   { id: "3", name: "Ikigai Bon", active: true },
@@ -14,9 +13,22 @@ const DEFAULT_PRIZES: Prize[] = [
   { id: "7", name: "Vrije keuze", active: true },
 ];
 
-async function readPrizes(): Promise<Prize[]> {
-  const { blobs } = await list({ prefix: BLOB_PATHNAME });
-  if (blobs.length === 0) return DEFAULT_PRIZES;
+const TWEEDE_DEFAULT_PRIZES: Prize[] = [
+  { id: "1", name: "Prijs 1", active: true },
+  { id: "2", name: "Prijs 2", active: true },
+  { id: "3", name: "Prijs 3", active: true },
+  { id: "4", name: "Prijs 4", active: true },
+  { id: "5", name: "Prijs 5", active: true },
+];
+
+const DEFAULT_PRIZES: Record<string, Prize[]> = {
+  psv: PSV_DEFAULT_PRIZES,
+  tweede: TWEEDE_DEFAULT_PRIZES,
+};
+
+async function readPrizes(prizesKey: string, themeId: string): Promise<Prize[]> {
+  const { blobs } = await list({ prefix: prizesKey });
+  if (blobs.length === 0) return DEFAULT_PRIZES[themeId] ?? PSV_DEFAULT_PRIZES;
   const res = await fetch(blobs[0].downloadUrl, {
     headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
     cache: "no-store",
@@ -24,9 +36,13 @@ async function readPrizes(): Promise<Prize[]> {
   return res.json() as Promise<Prize[]>;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const themeId = searchParams.get("theme") ?? "psv";
+  const theme = getTheme(themeId);
+
   try {
-    const prizes = await readPrizes();
+    const prizes = await readPrizes(theme.prizesKey, theme.id);
     return NextResponse.json(prizes);
   } catch (err) {
     console.error("Failed to read prizes:", err);
@@ -35,6 +51,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const themeId = searchParams.get("theme") ?? "psv";
+  const theme = getTheme(themeId);
+
   try {
     const body: unknown = await request.json();
 
@@ -54,7 +74,7 @@ export async function POST(request: Request) {
       }
     }
 
-    await put(BLOB_PATHNAME, JSON.stringify(prizes), {
+    await put(theme.prizesKey, JSON.stringify(prizes), {
       access: "private",
       contentType: "application/json",
       addRandomSuffix: false,

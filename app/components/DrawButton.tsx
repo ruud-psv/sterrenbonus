@@ -5,9 +5,19 @@ import { motion } from 'framer-motion';
 interface DrawButtonProps {
   onClick: () => void;
   disabled?: boolean;
+  primaryColor?: string;
+  primaryDark?: string;
 }
 
-export default function DrawButton({ onClick, disabled = false }: DrawButtonProps) {
+export default function DrawButton({
+  onClick,
+  disabled = false,
+  primaryColor = '#C8102E',
+  primaryDark = '#9B0020',
+}: DrawButtonProps) {
+  // Lighten primary slightly for gradient top
+  const primaryLight = primaryColor;
+
   return (
     <motion.button
       onClick={onClick}
@@ -19,8 +29,8 @@ export default function DrawButton({ onClick, disabled = false }: DrawButtonProp
         minWidth: 260,
         padding: '1.3rem 3.5rem',
         background: disabled
-          ? 'rgba(200,16,46,0.35)'
-          : 'linear-gradient(160deg, #e8102e 0%, #C8102E 50%, #9B0020 100%)',
+          ? `${primaryColor}59`
+          : `linear-gradient(160deg, ${primaryLight} 0%, ${primaryColor} 50%, ${primaryDark} 100%)`,
         border: 'none',
         borderRadius: 3,
         cursor: disabled ? 'not-allowed' : 'pointer',

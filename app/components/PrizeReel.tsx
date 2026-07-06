@@ -12,9 +12,18 @@ interface Props {
   winner: Prize | null;
   spinning: boolean;
   onDone: () => void;
+  primaryColor?: string;
+  bgCard?: string;
 }
 
-export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
+export default function PrizeReel({
+  prizes,
+  winner,
+  spinning,
+  onDone,
+  primaryColor = '#C8102E',
+  bgCard = 'rgba(8, 8, 20, 0.85)',
+}: Props) {
   const ctrl = useAnimation();
   const n = prizes.length;
 
@@ -27,22 +36,18 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
     const winnerIdx = prizes.findIndex(p => p.id === winner.id);
     const finalAngle = SPIN_REVOLUTIONS * 360 + winnerIdx * faceAngle;
 
-    // ~60% of the time: overshoot past winner so the drum snaps BACK (more tension).
-    // ~40%: stop just before winner and snap forward.
     const goesBackward = Math.random() < 0.6;
     const overshoot = faceAngle * (0.28 + Math.random() * 0.42);
     const preSnapAngle = goesBackward
-      ? finalAngle + overshoot   // passed the winner → spring pulls back
-      : finalAngle - overshoot;  // just before winner → spring pushes forward
+      ? finalAngle + overshoot
+      : finalAngle - overshoot;
 
     ctrl.set({ rotateX: 0 });
 
-    // Phase 1: main spin — 10s, decelerates to pre-snap position
     ctrl.start({
       rotateX: preSnapAngle,
       transition: { duration: 10, ease: [0.12, 0.9, 0.25, 1.0] },
     }).then(() =>
-      // Phase 2: spring snap — bouncier when going backward for extra drama
       ctrl.start({
         rotateX: finalAngle,
         transition: {
@@ -58,6 +63,9 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
 
   if (n === 0) return null;
 
+  // Parse primary color to rgba for consistent usage
+  const p = primaryColor;
+
   return (
     <div
       style={{
@@ -65,26 +73,26 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
         width: 540,
         height: windowH,
         borderRadius: 4,
-        border: '2px solid rgba(200, 16, 46, 0.7)',
+        border: `2px solid ${p}b3`,
         boxShadow: [
-          '0 0 0 1px rgba(200, 16, 46, 0.2)',
-          '0 0 40px rgba(200, 16, 46, 0.4)',
-          '0 0 80px rgba(200, 16, 46, 0.15)',
-          'inset 0 0 40px rgba(200, 16, 46, 0.06)',
+          `0 0 0 1px ${p}33`,
+          `0 0 40px ${p}66`,
+          `0 0 80px ${p}26`,
+          `inset 0 0 40px ${p}0f`,
         ].join(', '),
         overflow: 'hidden',
-        background: 'rgba(8, 8, 20, 0.85)',
+        background: bgCard,
       }}
     >
       {/* Top fade */}
       <div
         className="absolute inset-x-0 top-0 z-10 pointer-events-none"
-        style={{ height: ITEM_H, background: 'linear-gradient(to bottom, rgba(8,8,20,1) 0%, rgba(8,8,20,0.5) 60%, transparent 100%)' }}
+        style={{ height: ITEM_H, background: `linear-gradient(to bottom, ${bgCard} 0%, ${bgCard.replace('0.85', '0.5')} 60%, transparent 100%)` }}
       />
       {/* Bottom fade */}
       <div
         className="absolute inset-x-0 bottom-0 z-10 pointer-events-none"
-        style={{ height: ITEM_H, background: 'linear-gradient(to top, rgba(8,8,20,1) 0%, rgba(8,8,20,0.5) 60%, transparent 100%)' }}
+        style={{ height: ITEM_H, background: `linear-gradient(to top, ${bgCard} 0%, ${bgCard.replace('0.85', '0.5')} 60%, transparent 100%)` }}
       />
 
       {/* Center selection window */}
@@ -93,9 +101,9 @@ export default function PrizeReel({ prizes, winner, spinning, onDone }: Props) {
         style={{
           top: ITEM_H,
           height: ITEM_H,
-          borderTop: '1px solid rgba(200, 16, 46, 0.55)',
-          borderBottom: '1px solid rgba(200, 16, 46, 0.55)',
-          background: 'rgba(200, 16, 46, 0.05)',
+          borderTop: `1px solid ${p}8c`,
+          borderBottom: `1px solid ${p}8c`,
+          background: `${p}0d`,
         }}
       />
 
