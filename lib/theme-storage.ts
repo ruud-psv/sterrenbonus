@@ -1,7 +1,9 @@
 import { list } from "@vercel/blob";
+import { unstable_noStore as noStore } from "next/cache";
 import type { ThemeOverrides } from "@/lib/themes";
 
 export async function readThemeOverrides(themeId: string): Promise<ThemeOverrides> {
+  noStore();
   try {
     const key = `theme-overrides-${themeId}.json`;
     const { blobs } = await list({ prefix: key });
