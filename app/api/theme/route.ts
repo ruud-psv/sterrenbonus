@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { put, list } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import type { ThemeOverrides } from "@/lib/themes";
+import { readThemeOverrides } from "@/lib/theme-storage";
 
 function overridesKey(themeId: string) {
   return `theme-overrides-${themeId}.json`;
@@ -9,20 +10,8 @@ function overridesKey(themeId: string) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const themeId = searchParams.get("theme") ?? "psv";
-
-  try {
-    const key = overridesKey(themeId);
-    const { blobs } = await list({ prefix: key });
-    if (blobs.length === 0) return NextResponse.json({});
-    const res = await fetch(blobs[0].downloadUrl, {
-      headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
-      cache: "no-store",
-    });
-    return NextResponse.json(await res.json());
-  } catch (err) {
-    console.error("Failed to read theme overrides:", err);
-    return NextResponse.json({});
-  }
+  const overrides = await readThemeOverrides(themeId);
+  return NextResponse.json(overrides);
 }
 
 export async function POST(request: Request) {
