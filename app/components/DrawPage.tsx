@@ -93,11 +93,6 @@ export default function DrawPage({ theme }: DrawPageProps) {
         />
       )}
 
-      {/* Dark overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{ background: `${theme.colors.bg}b8`, zIndex: 0 }}
-      />
 
       {theme.showStars && (
         <StarCanvas
@@ -172,7 +167,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
             </div>
           </div>
         ) : (
-          <div style={{ width: '100%', background: primary, display: 'flex', justifyContent: 'center', padding: '1rem 0' }}>
+          <div style={{ display: 'inline-flex', background: primary, padding: '1rem 2rem' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={theme.logo}
