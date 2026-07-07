@@ -67,7 +67,7 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
     } finally {
       setSaving(false);
     }
-  }, [theme.id, primaryColor, goldColor, bgColor, logoUrl, bgUrl, appTitle, showStars]);
+  }, [theme.id, primaryColor, goldColor, bgColor, logoUrl, bgUrl, appTitle, showStars, showTitle]);
 
   const uploadFile = useCallback(async (file: File, onUrl: (url: string) => void) => {
     const fd = new FormData();
