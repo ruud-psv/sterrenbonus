@@ -41,9 +41,9 @@ export const themes: Record<string, Theme> = {
     prizesKey: 'prizes.json',
     appTitle: 'Sterrenbonus',
   },
-  tweede: {
-    id: 'tweede',
-    label: 'Tweede Thema',
+  fanscan: {
+    id: 'fanscan',
+    label: 'Fanscan',
     colors: {
       primary: '#003DA5',
       primaryDark: '#002878',
@@ -51,14 +51,14 @@ export const themes: Record<string, Theme> = {
       bg: '#050510',
       bgCard: '#060618',
     },
-    logo: '/logo-tweede.svg',
+    logo: '/logo-fanscan.svg',
     logoSize: 68,
     backgroundImage: '',
     backgroundPosition: 'center center',
     showStars: false,
     showTitle: true,
     borderWidth: 15,
-    prizesKey: 'prizes-tweede.json',
+    prizesKey: 'prizes-fanscan.json',
     appTitle: 'Bonus',
   },
 };

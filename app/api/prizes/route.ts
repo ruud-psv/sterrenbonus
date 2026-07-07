@@ -23,7 +23,7 @@ const TWEEDE_DEFAULT_PRIZES: Prize[] = [
 
 const DEFAULT_PRIZES: Record<string, Prize[]> = {
   psv: PSV_DEFAULT_PRIZES,
-  tweede: TWEEDE_DEFAULT_PRIZES,
+  fanscan: TWEEDE_DEFAULT_PRIZES,
 };
 
 async function readPrizes(prizesKey: string, themeId: string): Promise<Prize[]> {
