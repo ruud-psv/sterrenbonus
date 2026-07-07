@@ -137,39 +137,50 @@ export default function DrawPage({ theme }: DrawPageProps) {
 
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-10 flex justify-center">
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '1rem',
-            background: primary,
-            padding: '1rem 2rem 1.2rem',
-            borderRadius: '0 0 20px 20px',
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={theme.logo}
-            alt={theme.label}
-            width={theme.logoSize}
-            height={theme.logoSize}
-            style={{ flexShrink: 0, objectFit: 'contain' }}
-          />
+        {theme.showTitle ? (
           <div
             style={{
-              fontSize: 'clamp(1.3rem, 3.25vw, 2.6rem)',
-              fontWeight: 700,
-              fontStyle: 'italic',
-              lineHeight: 0.9,
-              letterSpacing: '0.01em',
-              color: '#ffffff',
-              fontFamily: 'PSVBranding, var(--font-psv)',
-              textTransform: 'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '1rem',
+              background: primary,
+              padding: '1rem 2rem 1.2rem',
+              borderRadius: 0,
             }}
           >
-            {theme.appTitle}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={theme.logo}
+              alt={theme.label}
+              width={theme.logoSize}
+              height={theme.logoSize}
+              style={{ flexShrink: 0, objectFit: 'contain' }}
+            />
+            <div
+              style={{
+                fontSize: 'clamp(1.3rem, 3.25vw, 2.6rem)',
+                fontWeight: 700,
+                fontStyle: 'italic',
+                lineHeight: 0.9,
+                letterSpacing: '0.01em',
+                color: '#ffffff',
+                fontFamily: 'PSVBranding, var(--font-psv)',
+                textTransform: 'uppercase',
+              }}
+            >
+              {theme.appTitle}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div style={{ width: '100%', background: primary, display: 'flex', justifyContent: 'center', padding: '1rem 0' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={theme.logo}
+              alt={theme.label}
+              style={{ height: 200, width: 'auto', objectFit: 'contain' }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Center content */}

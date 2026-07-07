@@ -13,6 +13,7 @@ export interface Theme {
   backgroundImage: string;
   backgroundPosition: string;
   showStars: boolean;
+  showTitle: boolean;
   borderWidth: number;
   prizesKey: string;
   appTitle: string;
@@ -35,6 +36,7 @@ export const themes: Record<string, Theme> = {
       'https://www.psv.nl/upload_mm/c/c/8/32619638-ad88-4814-a0e1-670c92c85cf3_1c7daccd2b90c864d538e68f3b0f1fc5_1600x600.jpg',
     backgroundPosition: 'center 30%',
     showStars: true,
+    showTitle: true,
     borderWidth: 15,
     prizesKey: 'prizes.json',
     appTitle: 'Sterrenbonus',
@@ -54,6 +56,7 @@ export const themes: Record<string, Theme> = {
     backgroundImage: '',
     backgroundPosition: 'center center',
     showStars: false,
+    showTitle: true,
     borderWidth: 15,
     prizesKey: 'prizes-tweede.json',
     appTitle: 'Bonus',
@@ -71,6 +74,7 @@ export interface ThemeOverrides {
   backgroundImage?: string;
   backgroundPosition?: string;
   showStars?: boolean;
+  showTitle?: boolean;
   appTitle?: string;
 }
 
@@ -95,6 +99,7 @@ export function mergeTheme(base: Theme, overrides: ThemeOverrides): Theme {
     backgroundImage: overrides.backgroundImage ?? base.backgroundImage,
     backgroundPosition: overrides.backgroundPosition ?? base.backgroundPosition,
     showStars: overrides.showStars ?? base.showStars,
+    showTitle: overrides.showTitle ?? base.showTitle,
     colors: {
       ...base.colors,
       primary: primaryOverride ?? base.colors.primary,

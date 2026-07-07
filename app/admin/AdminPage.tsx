@@ -37,6 +37,7 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
   const [bgUrl, setBgUrl] = useState(initialOverrides.backgroundImage ?? theme.backgroundImage);
   const [appTitle, setAppTitle] = useState(initialOverrides.appTitle ?? theme.appTitle);
   const [showStars, setShowStars] = useState(initialOverrides.showStars ?? theme.showStars);
+  const [showTitle, setShowTitle] = useState(initialOverrides.showTitle ?? theme.showTitle);
 
   const primary = theme.colors.primary;
 
@@ -49,6 +50,7 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
       backgroundImage: bgUrl,
       backgroundPosition: 'center 30%',
       showStars,
+      showTitle,
       appTitle,
     };
     try {
@@ -179,8 +181,24 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
                   </label>
                 </Field>
 
-                {/* Logo */}
-                <Field label="Beeldmark">
+                {/* Beeldmark + titel toggle */}
+                <Field label="Beeldmark & Titel">
+                  <label className="flex items-center gap-3 cursor-pointer select-none mb-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowTitle(s => !s)}
+                      className="relative flex-shrink-0 w-11 h-6 rounded-full focus:outline-none"
+                      style={{ background: showTitle ? primary : 'rgba(255,255,255,0.12)', transition: 'background 0.2s' }}
+                    >
+                      <span
+                        className="absolute top-1 w-4 h-4 rounded-full bg-white"
+                        style={{ left: 2, transform: showTitle ? 'translateX(20px)' : 'translateX(0px)', transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                      />
+                    </button>
+                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                      {showTitle ? 'Titel + beeldmerk weergeven' : 'Alleen beeldmerk (gecentreerd, 200px)'}
+                    </span>
+                  </label>
                   <div className="flex gap-2 items-center">
                     {logoUrl && (
                       /* eslint-disable-next-line @next/next/no-img-element */
