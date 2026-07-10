@@ -33,6 +33,8 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
   const [primaryColor, setPrimaryColor] = useState(theme.colors.primary);
   const [goldColor, setGoldColor] = useState(theme.colors.gold);
   const [bgColor, setBgColor] = useState(theme.colors.bg);
+  const [buttonBg, setButtonBg] = useState(theme.button.bg);
+  const [buttonText, setButtonText] = useState(theme.button.text);
   const [logoUrl, setLogoUrl] = useState(initialOverrides.logo ?? theme.logo);
   const [bgUrl, setBgUrl] = useState(initialOverrides.backgroundImage ?? theme.backgroundImage);
   const [appTitle, setAppTitle] = useState(initialOverrides.appTitle ?? theme.appTitle);
@@ -46,6 +48,8 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
     setStatus(null);
     const overrides: ThemeOverrides = {
       colors: { primary: primaryColor, gold: goldColor, bg: bgColor },
+      buttonBg,
+      buttonText,
       logo: logoUrl || undefined,
       backgroundImage: bgUrl,
       backgroundPosition: 'center 30%',
@@ -67,7 +71,7 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
     } finally {
       setSaving(false);
     }
-  }, [theme.id, primaryColor, goldColor, bgColor, logoUrl, bgUrl, appTitle, showStars, showTitle]);
+  }, [theme.id, primaryColor, goldColor, bgColor, buttonBg, buttonText, logoUrl, bgUrl, appTitle, showStars, showTitle]);
 
   const uploadFile = useCallback(async (file: File, onUrl: (url: string) => void) => {
     const fd = new FormData();
@@ -152,6 +156,31 @@ function ThemeSettings({ theme, initialOverrides }: ThemeSettingsProps) {
                   <ColorField label="Goudkleur" value={goldColor} onChange={setGoldColor} />
                   <ColorField label="Achtergrond" value={bgColor} onChange={setBgColor} />
                 </div>
+
+                {/* START-knop */}
+                <Field label="START-knop">
+                  <div className="grid grid-cols-2 gap-3">
+                    <ColorField label="Achtergrondkleur" value={buttonBg} onChange={setButtonBg} />
+                    <ColorField label="Tekstkleur" value={buttonText} onChange={setButtonText} />
+                  </div>
+                  <div className="mt-3 flex justify-center rounded-lg py-4" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '0.6rem 2rem',
+                        borderRadius: 3,
+                        background: `linear-gradient(160deg, ${buttonBg} 0%, ${buttonBg} 50%, ${buttonBg} 100%)`,
+                        color: buttonText,
+                        fontSize: '1.1rem',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      START
+                    </span>
+                  </div>
+                </Field>
 
                 {/* Sterren */}
                 <Field label="Animatie">

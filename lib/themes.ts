@@ -8,6 +8,11 @@ export interface Theme {
     bg: string;
     bgCard: string;
   };
+  button: {
+    bg: string;
+    bgDark: string;
+    text: string;
+  };
   logo: string;
   logoSize: number;
   backgroundImage: string;
@@ -30,6 +35,11 @@ export const themes: Record<string, Theme> = {
       bg: '#0D0D0D',
       bgCard: '#080814',
     },
+    button: {
+      bg: '#C8102E',
+      bgDark: '#9B0020',
+      text: '#ffffff',
+    },
     logo: '/psv-logo-white.svg',
     logoSize: 68,
     backgroundImage:
@@ -51,6 +61,11 @@ export const themes: Record<string, Theme> = {
       bg: '#050510',
       bgCard: '#060618',
     },
+    button: {
+      bg: '#003DA5',
+      bgDark: '#002878',
+      text: '#ffffff',
+    },
     logo: '/logo-fanscan.svg',
     logoSize: 68,
     backgroundImage: '',
@@ -70,6 +85,8 @@ export interface ThemeOverrides {
     gold?: string;
     bg?: string;
   };
+  buttonBg?: string;
+  buttonText?: string;
   logo?: string;
   backgroundImage?: string;
   backgroundPosition?: string;
@@ -92,6 +109,7 @@ function autoDarken(hex: string): string {
 
 export function mergeTheme(base: Theme, overrides: ThemeOverrides): Theme {
   const primaryOverride = overrides.colors?.primary;
+  const buttonBgOverride = overrides.buttonBg;
   return {
     ...base,
     appTitle: overrides.appTitle ?? base.appTitle,
@@ -106,6 +124,11 @@ export function mergeTheme(base: Theme, overrides: ThemeOverrides): Theme {
       primaryDark: primaryOverride ? autoDarken(primaryOverride) : base.colors.primaryDark,
       gold: overrides.colors?.gold ?? base.colors.gold,
       bg: overrides.colors?.bg ?? base.colors.bg,
+    },
+    button: {
+      bg: buttonBgOverride ?? base.button.bg,
+      bgDark: buttonBgOverride ? autoDarken(buttonBgOverride) : base.button.bgDark,
+      text: overrides.buttonText ?? base.button.text,
     },
   };
 }
