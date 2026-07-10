@@ -270,7 +270,10 @@ export default function DrawPage({ theme }: DrawPageProps) {
             style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100000, background: primary }}
           >
             <div className="overflow-hidden" style={{ padding: '0.65rem 0' }}>
-              <div className="ticker-track">
+              <div
+                className="ticker-track"
+                style={{ animationDuration: `${Math.max(40, activePrizes.length * 6)}s` }}
+              >
                 {[...activePrizes, ...activePrizes, ...activePrizes, ...activePrizes].map((prize, i) => (
                   <span key={i} className="ticker-item" style={{ color: '#ffffff' }}>
                     {theme.showStars ? '★' : '◆'}&nbsp;&nbsp;{prize.name}
