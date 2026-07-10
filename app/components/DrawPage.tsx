@@ -205,8 +205,9 @@ export default function DrawPage({ theme }: DrawPageProps) {
               <DrawButton
                 onClick={handleDraw}
                 disabled={activePrizes.length === 0}
-                primaryColor={theme.colors.primary}
-                primaryDark={theme.colors.primaryDark}
+                bgColor={theme.button.bg}
+                bgDark={theme.button.bgDark}
+                textColor={theme.button.text}
               />
             </motion.div>
           )}
