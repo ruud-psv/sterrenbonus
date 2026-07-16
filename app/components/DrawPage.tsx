@@ -10,6 +10,7 @@ import Confetti from '@/app/components/Confetti';
 import type { Prize } from '@/app/types';
 import type { Theme } from '@/lib/themes';
 import { hexToRgb } from '@/lib/themes';
+import { isAvailable } from '@/lib/prize-logic';
 
 type Phase = 'idle' | 'spinning' | 'done';
 
@@ -19,6 +20,7 @@ interface DrawPageProps {
 
 export default function DrawPage({ theme }: DrawPageProps) {
   const [prizes, setPrizes] = useState<Prize[]>([]);
+  const [reelPrizes, setReelPrizes] = useState<Prize[]>([]);
   const [phase, setPhase] = useState<Phase>('idle');
   const [winner, setWinner] = useState<Prize | null>(null);
   const [showReset, setShowReset] = useState(false);
@@ -35,15 +37,37 @@ export default function DrawPage({ theme }: DrawPageProps) {
     return () => { if (resetTimerRef.current) clearTimeout(resetTimerRef.current); };
   }, [theme.id]);
 
-  const activePrizes = prizes.filter(p => p.active);
+  const availablePrizes = prizes.filter(isAvailable);
 
-  const handleDraw = useCallback(() => {
-    if (phase !== 'idle' || activePrizes.length === 0) return;
-    const picked = activePrizes[Math.floor(Math.random() * activePrizes.length)];
-    setWinner(picked);
+  const handleDraw = useCallback(async () => {
+    if (phase !== 'idle') return;
+    const pool = prizes.filter(isAvailable);
+    if (pool.length === 0) return;
+
+    // Spin over the currently-available prizes; the reel keeps this snapshot so
+    // a just-emptied winner stays visible while it lands.
+    setReelPrizes(pool);
+    setWinner(null);
+    setError(null);
     setShowReset(false);
     setPhase('spinning');
-  }, [phase, activePrizes]);
+
+    try {
+      const res = await fetch(`/api/draw?theme=${theme.id}`, { method: 'POST' });
+      if (!res.ok) throw new Error('Server error');
+      const data = await res.json() as { winner: Prize | null; prizes: Prize[] };
+      if (!data.winner) {
+        setError('Geen prijzen meer beschikbaar');
+        setPhase('idle');
+        return;
+      }
+      setWinner(data.winner);      // triggers the reel to spin to the winner
+      setPrizes(data.prizes);      // refreshes stock for the next round
+    } catch {
+      setError('Trekking mislukt — probeer opnieuw');
+      setPhase('idle');
+    }
+  }, [phase, prizes, theme.id]);
 
   const handleReelDone = useCallback(() => {
     setPhase('done');
@@ -204,7 +228,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
             >
               <DrawButton
                 onClick={handleDraw}
-                disabled={activePrizes.length === 0}
+                disabled={availablePrizes.length === 0}
                 bgColor={theme.button.bg}
                 bgDark={theme.button.bgDark}
                 textColor={theme.button.text}
@@ -222,7 +246,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
               className="flex flex-col items-center gap-6"
             >
               <PrizeReel
-                prizes={activePrizes}
+                prizes={reelPrizes}
                 winner={winner}
                 spinning={phase === 'spinning'}
                 onDone={handleReelDone}
@@ -261,7 +285,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
 
       {/* Prize ticker */}
       <AnimatePresence>
-        {phase === 'idle' && activePrizes.length > 0 && (
+        {phase === 'idle' && availablePrizes.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -273,9 +297,9 @@ export default function DrawPage({ theme }: DrawPageProps) {
             <div className="overflow-hidden" style={{ padding: '0.65rem 0' }}>
               <div
                 className="ticker-track"
-                style={{ animationDuration: `${Math.max(40, activePrizes.length * 6)}s` }}
+                style={{ animationDuration: `${Math.max(40, availablePrizes.length * 6)}s` }}
               >
-                {[...activePrizes, ...activePrizes, ...activePrizes, ...activePrizes].map((prize, i) => (
+                {[...availablePrizes, ...availablePrizes, ...availablePrizes, ...availablePrizes].map((prize, i) => (
                   <span key={i} className="ticker-item" style={{ color: '#ffffff' }}>
                     {theme.showStars ? '★' : '◆'}&nbsp;&nbsp;{prize.name}
                   </span>

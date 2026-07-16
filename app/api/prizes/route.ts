@@ -1,40 +1,6 @@
 import { NextResponse } from "next/server";
-import { put, list } from "@vercel/blob";
-import type { Prize } from "@/app/types";
 import { getTheme } from "@/lib/themes";
-
-const PSV_DEFAULT_PRIZES: Prize[] = [
-  { id: "1", name: "Jumbo Bon", active: true },
-  { id: "2", name: "XXL Nutrition Bon", active: true },
-  { id: "3", name: "Ikigai Bon", active: true },
-  { id: "4", name: "NH Hotel Bon", active: true },
-  { id: "5", name: "Sports Gift Card", active: true },
-  { id: "6", name: "Ultimate Gift Card", active: true },
-  { id: "7", name: "Vrije keuze", active: true },
-];
-
-const TWEEDE_DEFAULT_PRIZES: Prize[] = [
-  { id: "1", name: "Prijs 1", active: true },
-  { id: "2", name: "Prijs 2", active: true },
-  { id: "3", name: "Prijs 3", active: true },
-  { id: "4", name: "Prijs 4", active: true },
-  { id: "5", name: "Prijs 5", active: true },
-];
-
-const DEFAULT_PRIZES: Record<string, Prize[]> = {
-  psv: PSV_DEFAULT_PRIZES,
-  fanscan: TWEEDE_DEFAULT_PRIZES,
-};
-
-async function readPrizes(prizesKey: string, themeId: string): Promise<Prize[]> {
-  const { blobs } = await list({ prefix: prizesKey });
-  if (blobs.length === 0) return DEFAULT_PRIZES[themeId] ?? PSV_DEFAULT_PRIZES;
-  const res = await fetch(blobs[0].downloadUrl, {
-    headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
-    cache: "no-store",
-  });
-  return res.json() as Promise<Prize[]>;
-}
+import { readPrizes, writePrizes, normalizePrize } from "@/lib/prizes";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -62,24 +28,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Body must be an array of prizes" }, { status: 400 });
     }
 
-    const prizes = body as Prize[];
-
-    for (const prize of prizes) {
-      if (
-        typeof prize.id !== "string" ||
-        typeof prize.name !== "string" ||
-        typeof prize.active !== "boolean"
-      ) {
-        return NextResponse.json({ error: "Invalid prize shape" }, { status: 400 });
-      }
+    // Normalize every entry; a null result means the entry was malformed.
+    const prizes = body.map(normalizePrize);
+    if (prizes.some((p) => p === null)) {
+      return NextResponse.json({ error: "Invalid prize shape" }, { status: 400 });
     }
 
-    await put(theme.prizesKey, JSON.stringify(prizes), {
-      access: "private",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
+    await writePrizes(theme.prizesKey, prizes.filter((p) => p !== null));
 
     return NextResponse.json({ ok: true });
   } catch (err) {

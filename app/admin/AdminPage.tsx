@@ -5,9 +5,19 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Prize } from '@/app/types';
 import type { Theme, ThemeOverrides } from '@/lib/themes';
+import { isAvailable } from '@/lib/prize-logic';
 
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/** Parse an admin stock input. Empty string → unlimited (null). */
+function parseStock(raw: string): number | null {
+  const trimmed = raw.trim();
+  if (trimmed === '') return null;
+  const n = Math.floor(Number(trimmed));
+  if (!Number.isFinite(n) || n < 0) return null;
+  return n;
 }
 
 interface AdminPageProps {
@@ -389,6 +399,7 @@ export default function AdminPage({ theme, initialOverrides }: AdminPageProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [newPrizeName, setNewPrizeName] = useState('');
+  const [newPrizeStock, setNewPrizeStock] = useState('');
   const [addingNew, setAddingNew] = useState(false);
 
   const primary = theme.colors.primary;
@@ -435,15 +446,33 @@ export default function AdminPage({ theme, initialOverrides }: AdminPageProps) {
 
   const deletePrize = useCallback((id: string) => savePrizes(prizes.filter(p => p.id !== id)), [prizes, savePrizes]);
 
+  // Update remaining stock. Keeps initialStock as the planning denominator, but
+  // bumps it up when the admin restocks above the original amount.
+  const updateStock = useCallback((id: string, raw: string) => {
+    const stock = parseStock(raw);
+    savePrizes(prizes.map(p => {
+      if (p.id !== id) return p;
+      const initialStock =
+        stock === null ? null
+        : p.initialStock === null || stock > p.initialStock ? stock
+        : p.initialStock;
+      return { ...p, stock, initialStock };
+    }));
+  }, [prizes, savePrizes]);
+
   const addPrize = useCallback(() => {
     const trimmed = newPrizeName.trim();
     if (!trimmed) return;
-    const updated = [...prizes, { id: generateId(), name: trimmed, active: true }];
-    setNewPrizeName(''); setAddingNew(false);
+    const stock = parseStock(newPrizeStock);
+    const updated: Prize[] = [
+      ...prizes,
+      { id: generateId(), name: trimmed, active: true, stock, initialStock: stock },
+    ];
+    setNewPrizeName(''); setNewPrizeStock(''); setAddingNew(false);
     savePrizes(updated);
-  }, [newPrizeName, prizes, savePrizes]);
+  }, [newPrizeName, newPrizeStock, prizes, savePrizes]);
 
-  const activePrizes = prizes.filter(p => p.active);
+  const availablePrizes = prizes.filter(isAvailable);
   const inactivePrizes = prizes.filter(p => !p.active);
 
   return (
@@ -499,7 +528,7 @@ export default function AdminPage({ theme, initialOverrides }: AdminPageProps) {
           <div className="grid grid-cols-3 gap-4 mb-8">
             {[
               { label: 'Totaal', value: prizes.length, color: '#fff' },
-              { label: 'Actief', value: activePrizes.length, color: '#4ade80' },
+              { label: 'Beschikbaar', value: availablePrizes.length, color: '#4ade80' },
               { label: 'Inactief', value: inactivePrizes.length, color: 'rgba(255,255,255,0.35)' },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-2xl px-5 py-4 text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
@@ -564,8 +593,34 @@ export default function AdminPage({ theme, initialOverrides }: AdminPageProps) {
                     )}
                   </div>
 
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0" style={{ background: prize.active ? `${primary}2e` : 'rgba(255,255,255,0.06)', color: prize.active ? '#ff6b6b' : 'rgba(255,255,255,0.3)' }}>
-                    {prize.active ? 'Actief' : 'Inactief'}
+                  {/* Voorraad — leeg = onbeperkt (∞). Telt af bij elke trekking. */}
+                  <div className="flex-shrink-0 flex flex-col items-end" style={{ width: 74 }}>
+                    <input
+                      key={`${prize.id}-${prize.stock ?? 'inf'}`}
+                      type="text"
+                      inputMode="numeric"
+                      defaultValue={prize.stock === null ? '' : String(prize.stock)}
+                      disabled={saving}
+                      placeholder="∞"
+                      title="Resterende voorraad — leeg laten = onbeperkt"
+                      onBlur={e => { if (parseStock(e.target.value) !== prize.stock) updateStock(prize.id, e.target.value); }}
+                      onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                      className="w-full text-right px-2 py-1 rounded-lg text-white text-sm font-mono focus:outline-none"
+                      style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${primary}33` }}
+                    />
+                    {prize.stock !== null && prize.initialStock !== null && (
+                      <span className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        van {prize.initialStock.toLocaleString('nl-NL')}
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 text-center" style={{
+                    width: 92,
+                    background: !prize.active ? 'rgba(255,255,255,0.06)' : prize.stock === 0 ? 'rgba(251,191,36,0.12)' : `${primary}2e`,
+                    color: !prize.active ? 'rgba(255,255,255,0.3)' : prize.stock === 0 ? '#fbbf24' : '#ff6b6b',
+                  }}>
+                    {!prize.active ? 'Inactief' : prize.stock === 0 ? 'Uitverkocht' : 'Beschikbaar'}
                   </span>
 
                   <button onClick={() => startEdit(prize)} disabled={saving} className="flex-shrink-0 p-2 rounded-lg" style={{ color: 'rgba(255,255,255,0.3)', background: 'transparent', cursor: saving ? 'default' : 'pointer' }}
@@ -595,8 +650,19 @@ export default function AdminPage({ theme, initialOverrides }: AdminPageProps) {
                   placeholder="Naam van de prijs..."
                   value={newPrizeName}
                   onChange={e => setNewPrizeName(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') addPrize(); if (e.key === 'Escape') { setAddingNew(false); setNewPrizeName(''); } }}
+                  onKeyDown={e => { if (e.key === 'Enter') addPrize(); if (e.key === 'Escape') { setAddingNew(false); setNewPrizeName(''); setNewPrizeStock(''); } }}
                   className="flex-1 px-4 py-3 rounded-xl text-white text-sm font-medium focus:outline-none"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${primary}80` }}
+                />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Aantal (∞)"
+                  title="Aantal — leeg laten = onbeperkt"
+                  value={newPrizeStock}
+                  onChange={e => setNewPrizeStock(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') addPrize(); if (e.key === 'Escape') { setAddingNew(false); setNewPrizeName(''); setNewPrizeStock(''); } }}
+                  className="w-28 px-3 py-3 rounded-xl text-white text-sm text-right font-mono focus:outline-none"
                   style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${primary}80` }}
                 />
                 <button onClick={addPrize} disabled={!newPrizeName.trim() || saving} className="px-6 py-3 rounded-xl text-sm font-semibold"
