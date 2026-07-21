@@ -47,40 +47,11 @@ const FANSCAN_DEFAULT_PRIZES: Prize[] = [
   { id: "25", name: "Twee tickets PSV - Feyenoord", active: true, stock: 1, initialStock: 1 },
 ];
 
-// Testvoorraad — kleine aantallen zodat je snel wint, prijzen ziet uitverkopen
-// en uiteindelijk HELAAS krijgt. Totaal ~60. Losse data (theme "fanscantest").
-const FANSCANTEST_DEFAULT_PRIZES: Prize[] = [
-  { id: "1", name: "Phoxy Stressbal", active: true, stock: 8, initialStock: 8 },
-  { id: "2", name: "PSV Strandbal", active: true, stock: 5, initialStock: 5 },
-  { id: "3", name: "PSV Plaktattoo", active: true, stock: 8, initialStock: 8 },
-  { id: "4", name: "Phoxy Gloeilampje", active: true, stock: 5, initialStock: 5 },
-  { id: "5", name: "Puma Gymtas", active: true, stock: 3, initialStock: 3 },
-  { id: "6", name: "PSV FANstore Giftcard t.w.v. €5,-", active: true, stock: 3, initialStock: 3 },
-  { id: "7", name: "Thuisshirt", active: true, stock: 1, initialStock: 1 },
-  { id: "8", name: "Uitshirt", active: true, stock: 1, initialStock: 1 },
-  { id: "9", name: "Derde shirt", active: true, stock: 1, initialStock: 1 },
-  { id: "10", name: "Gesigneerd shirt Sven Mijnans", active: true, stock: 1, initialStock: 1 },
-  { id: "11", name: "Gesigneerd shirt Mauro Júnior", active: true, stock: 1, initialStock: 1 },
-  { id: "12", name: "Gesigneerd shirt Ruben van Bommel", active: true, stock: 1, initialStock: 1 },
-  { id: "13", name: "Jaar lang gratis Membership", active: true, stock: 2, initialStock: 2 },
-  { id: "14", name: "Twee tickets Johan Cruijff Schaal", active: true, stock: 1, initialStock: 1 },
-  { id: "15", name: "Twee tickets PSV – Villarreal CF", active: true, stock: 2, initialStock: 2 },
-  { id: "16", name: "Twee tickets Lichtstadderby", active: true, stock: 2, initialStock: 2 },
-  { id: "17", name: "Twee personen PSV Museum", active: true, stock: 3, initialStock: 3 },
-  { id: "18", name: "Twee personen PSV Stadiontour", active: true, stock: 2, initialStock: 2 },
-  { id: "19", name: "PSV Goodie", active: true, stock: 2, initialStock: 2 },
-  { id: "20", name: "PSV Spelersbus naar je uitwedstrijd", active: true, stock: 1, initialStock: 1 },
-  { id: "21", name: "Twee personen een besloten training bezoeken", active: true, stock: 1, initialStock: 1 },
-  { id: "22", name: "Exclusieve rondleiding profzijde", active: true, stock: 1, initialStock: 1 },
-  { id: "23", name: "Wedstrijdexperience Lichtstadderby", active: true, stock: 2, initialStock: 2 },
-  { id: "24", name: "Meet & Greet met Phoxy", active: true, stock: 2, initialStock: 2 },
-  { id: "25", name: "Twee tickets PSV - Feyenoord", active: true, stock: 1, initialStock: 1 },
-];
-
 const DEFAULT_PRIZES: Record<string, Prize[]> = {
   psv: PSV_DEFAULT_PRIZES,
   fanscan: FANSCAN_DEFAULT_PRIZES,
-  fanscantest: FANSCANTEST_DEFAULT_PRIZES,
+  // Test-thema gebruikt exact dezelfde (echte) aantallen als de FANdag.
+  fanscantest: FANSCAN_DEFAULT_PRIZES,
 };
 
 export function defaultPrizes(themeId: string): Prize[] {
