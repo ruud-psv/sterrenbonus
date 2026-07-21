@@ -44,9 +44,11 @@ export default function DrawPage({ theme }: DrawPageProps) {
   const availablePrizes = prizes.filter(isAvailable);
 
   const handleDraw = useCallback(async () => {
-    if (phase !== 'idle') return;
+    if (phase === 'spinning') return; // allow re-draw from 'done' (Nog een keer)
     const pool = prizes.filter(isAvailable);
     if (pool.length === 0) return;
+
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
 
     // Spin over the available prizes plus a HELAAS face, so the reel can land on
     // "no prize" too. The reel keeps this snapshot while it lands.
@@ -287,6 +289,39 @@ export default function DrawPage({ theme }: DrawPageProps) {
                   )}
                 </AnimatePresence>
               </div>
+
+              {/* "Nog een keer" — direct opnieuw draaien, scheelt tijd bij de kiosk */}
+              <AnimatePresence>
+                {phase === 'done' && (
+                  <motion.button
+                    key="again"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    transition={{ duration: 0.4, delay: 0.25 }}
+                    onClick={handleDraw}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.96 }}
+                    style={{
+                      padding: '0.9rem 2.6rem',
+                      borderRadius: 4,
+                      background: theme.button.bg,
+                      color: theme.button.text,
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '1.4rem',
+                      fontWeight: 900,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.02em',
+                      textTransform: 'uppercase',
+                      fontFamily: 'PSVBranding, var(--font-psv)',
+                      boxShadow: `0 8px 30px ${primary}66`,
+                    }}
+                  >
+                    Nog een keer
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
         </AnimatePresence>
