@@ -76,6 +76,34 @@ export const themes: Record<string, Theme> = {
     prizesKey: 'prizes-fanscan.json',
     appTitle: 'Bonus',
   },
+  // Test-tweeling van de FANdag: NIET tijdgestuurd (elke draai wint tot de
+  // testvoorraad op is → daarna HELAAS), eigen prijzen-blob. Look wordt van het
+  // echte fanscan-thema overgenomen. Losse data, raakt de echte FANdag niet.
+  fanscantest: {
+    id: 'fanscantest',
+    label: 'Fanscan TEST',
+    colors: {
+      primary: '#003DA5',
+      primaryDark: '#002878',
+      gold: '#F5A623',
+      bg: '#050510',
+      bgCard: '#060618',
+    },
+    button: {
+      bg: '#003DA5',
+      bgDark: '#002878',
+      text: '#ffffff',
+    },
+    logo: '/logo-fanscan.svg',
+    logoSize: 68,
+    backgroundImage: '',
+    backgroundPosition: 'center center',
+    showStars: false,
+    showTitle: true,
+    borderWidth: 15,
+    prizesKey: 'prizes-fanscantest.json',
+    appTitle: 'FANdag TEST',
+  },
 };
 
 // Fields editable via the admin UI — structural fields (id, prizesKey, etc.) are not overridable
