@@ -10,9 +10,12 @@ import Confetti from '@/app/components/Confetti';
 import type { Prize } from '@/app/types';
 import type { Theme } from '@/lib/themes';
 import { hexToRgb } from '@/lib/themes';
-import { isAvailable } from '@/lib/prize-logic';
+import { isAvailable, HELAAS_ID } from '@/lib/prize-logic';
 
 type Phase = 'idle' | 'spinning' | 'done';
+
+// Reel face shown when a spin lands on "no prize".
+const HELAAS_FACE: Prize = { id: HELAAS_ID, name: 'Helaas!', active: true, stock: null, initialStock: null };
 
 interface DrawPageProps {
   theme: Theme;
@@ -23,6 +26,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
   const [reelPrizes, setReelPrizes] = useState<Prize[]>([]);
   const [phase, setPhase] = useState<Phase>('idle');
   const [winner, setWinner] = useState<Prize | null>(null);
+  const [isHelaas, setIsHelaas] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -44,10 +48,11 @@ export default function DrawPage({ theme }: DrawPageProps) {
     const pool = prizes.filter(isAvailable);
     if (pool.length === 0) return;
 
-    // Spin over the currently-available prizes; the reel keeps this snapshot so
-    // a just-emptied winner stays visible while it lands.
-    setReelPrizes(pool);
+    // Spin over the available prizes plus a HELAAS face, so the reel can land on
+    // "no prize" too. The reel keeps this snapshot while it lands.
+    setReelPrizes([...pool, HELAAS_FACE]);
     setWinner(null);
+    setIsHelaas(false);
     setError(null);
     setShowReset(false);
     setPhase('spinning');
@@ -55,14 +60,15 @@ export default function DrawPage({ theme }: DrawPageProps) {
     try {
       const res = await fetch(`/api/draw?theme=${theme.id}`, { method: 'POST' });
       if (!res.ok) throw new Error('Server error');
-      const data = await res.json() as { winner: Prize | null; prizes: Prize[] };
-      if (!data.winner) {
-        setError('Geen prijzen meer beschikbaar');
-        setPhase('idle');
-        return;
-      }
-      setWinner(data.winner);      // triggers the reel to spin to the winner
+      const data = await res.json() as { result: 'prize' | 'helaas'; winner: Prize; prizes: Prize[] };
       setPrizes(data.prizes);      // refreshes stock for the next round
+      if (data.result === 'helaas') {
+        setIsHelaas(true);
+        setWinner(HELAAS_FACE);    // reel lands on the HELAAS face
+      } else {
+        setIsHelaas(false);
+        setWinner(data.winner);    // reel spins to the winner
+      }
     } catch {
       setError('Trekking mislukt — probeer opnieuw');
       setPhase('idle');
@@ -71,17 +77,19 @@ export default function DrawPage({ theme }: DrawPageProps) {
 
   const handleReelDone = useCallback(() => {
     setPhase('done');
-    resetTimerRef.current = setTimeout(() => setShowReset(true), 4000);
+    resetTimerRef.current = setTimeout(() => setShowReset(true), 2500);
   }, []);
 
   const handleReset = useCallback(() => {
     if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
     setPhase('idle');
     setWinner(null);
+    setIsHelaas(false);
     setShowReset(false);
   }, []);
 
-  const canvasPhase = phase === 'done' ? 'celebrate' : phase === 'spinning' ? 'spinning' : 'idle';
+  const won = phase === 'done' && !isHelaas;
+  const canvasPhase = won ? 'celebrate' : phase === 'spinning' ? 'spinning' : 'idle';
   const confettiColors = [theme.colors.primary, '#ffffff', theme.colors.gold, '#ffffff', theme.colors.primary, '#ffffff'];
   const primary = theme.colors.primary;
   const bw = theme.borderWidth;
@@ -125,7 +133,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
         />
       )}
 
-      <Confetti fire={phase === 'done'} colors={confettiColors} />
+      <Confetti fire={won} colors={confettiColors} />
 
       {/* Subtle radial glow */}
       <div
@@ -138,7 +146,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
 
       {/* Stronger glow on win */}
       <AnimatePresence>
-        {phase === 'done' && (
+        {won && (
           <motion.div
             key="glow"
             initial={{ opacity: 0 }}
@@ -271,9 +279,10 @@ export default function DrawPage({ theme }: DrawPageProps) {
                         fontFamily: 'PSVBranding, var(--font-psv)',
                         textAlign: 'center',
                         margin: 0,
+                        opacity: isHelaas ? 0.85 : 1,
                       }}
                     >
-                      Gefeliciteerd!
+                      {isHelaas ? 'Helaas, volgende keer!' : 'Gefeliciteerd!'}
                     </motion.p>
                   )}
                 </AnimatePresence>

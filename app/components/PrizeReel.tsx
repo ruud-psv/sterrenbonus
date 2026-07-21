@@ -5,7 +5,8 @@ import { motion, useAnimation } from 'framer-motion';
 import type { Prize } from '@/app/types';
 
 const ITEM_H = 96;
-const SPIN_REVOLUTIONS = 8;
+// Kortere, snellere spin → hogere doorloop bij 2 kiosks (FANdag).
+const SPIN_REVOLUTIONS = 5;
 
 // Reel sizing — the reel widens with the viewport and the prize text is scaled
 // to a single, shared font size so the longest name fits on one line.
@@ -86,7 +87,7 @@ export default function PrizeReel({
 
   useEffect(() => {
     if (!spinning || !winner || n === 0) return;
-    const winnerIdx = prizes.findIndex(p => p.id === winner.id);
+    const winnerIdx = Math.max(0, prizes.findIndex(p => p.id === winner.id));
     const finalAngle = SPIN_REVOLUTIONS * 360 + winnerIdx * faceAngle;
 
     const goesBackward = Math.random() < 0.6;
@@ -99,7 +100,7 @@ export default function PrizeReel({
 
     ctrl.start({
       rotateX: preSnapAngle,
-      transition: { duration: 10, ease: [0.12, 0.9, 0.25, 1.0] },
+      transition: { duration: 5, ease: [0.12, 0.9, 0.25, 1.0] },
     }).then(() =>
       ctrl.start({
         rotateX: finalAngle,
