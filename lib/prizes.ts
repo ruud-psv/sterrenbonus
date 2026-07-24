@@ -1,11 +1,14 @@
 import { put, list } from "@vercel/blob";
 import type { Prize } from "@/app/types";
 import { defaultPrizes, normalizeList } from "@/lib/prize-logic";
+import { overlayStock } from "@/lib/kv-store";
 
-// Blob-backed storage for prizes. Pure helpers live in "@/lib/prize-logic".
+// Prize definitions (name/active/initialStock) live in Blob; the live per-prize
+// stock is overlaid from Redis when KV is enabled (see lib/kv-store.ts). Pure
+// helpers live in "@/lib/prize-logic".
 export { defaultPrizes, normalizeList, normalizePrize, isAvailable, pickWeightedWinner } from "@/lib/prize-logic";
 
-export async function readPrizes(prizesKey: string, themeId: string): Promise<Prize[]> {
+async function readDefinitions(prizesKey: string, themeId: string): Promise<Prize[]> {
   const { blobs } = await list({ prefix: prizesKey });
   if (blobs.length === 0) return defaultPrizes(themeId);
   const res = await fetch(blobs[0].downloadUrl, {
@@ -13,6 +16,11 @@ export async function readPrizes(prizesKey: string, themeId: string): Promise<Pr
     cache: "no-store",
   });
   return normalizeList(await res.json());
+}
+
+export async function readPrizes(prizesKey: string, themeId: string): Promise<Prize[]> {
+  const defs = await readDefinitions(prizesKey, themeId);
+  return overlayStock(themeId, defs); // no-op (returns defs) when KV is off
 }
 
 export async function writePrizes(prizesKey: string, prizes: Prize[]): Promise<void> {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getTheme } from "@/lib/themes";
 import { readPrizes, writePrizes, normalizePrize } from "@/lib/prizes";
+import { syncStock } from "@/lib/kv-store";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -34,7 +35,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid prize shape" }, { status: 400 });
     }
 
-    await writePrizes(theme.prizesKey, prizes.filter((p) => p !== null));
+    const clean = prizes.filter((p) => p !== null);
+    await writePrizes(theme.prizesKey, clean);   // definitions → Blob
+    await syncStock(theme.id, clean);            // live counters → KV (no-op if KV off)
 
     return NextResponse.json({ ok: true });
   } catch (err) {
