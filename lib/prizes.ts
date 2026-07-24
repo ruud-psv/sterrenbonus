@@ -21,5 +21,9 @@ export async function writePrizes(prizesKey: string, prizes: Prize[]): Promise<v
     contentType: "application/json",
     addRandomSuffix: false,
     allowOverwrite: true,
+    // Don't let the Blob CDN cache the prizes file — otherwise an overwrite
+    // (a decrement) isn't visible on the next read and the stock appears not to
+    // drop. With max-age 0 each read revalidates against the latest version.
+    cacheControlMaxAge: 0,
   });
 }
