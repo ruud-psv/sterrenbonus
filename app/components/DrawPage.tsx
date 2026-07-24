@@ -284,7 +284,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                         opacity: isHelaas ? 0.85 : 1,
                       }}
                     >
-                      {isHelaas ? 'Helaas, volgende keer!' : 'Gefeliciteerd!'}
+                      {isHelaas ? 'Helaas, volgende keer beter!' : 'Gefeliciteerd!'}
                     </motion.p>
                   )}
                 </AnimatePresence>
