@@ -13,7 +13,8 @@ export function middleware(req: NextRequest) {
   }
 
   const theme = searchParams.get("theme") ?? "psv";
-  if (!PROTECTED_THEMES.has(theme)) {
+  const isProtected = pathname === "/handleiding" || PROTECTED_THEMES.has(theme);
+  if (!isProtected) {
     return NextResponse.next();
   }
 
@@ -33,5 +34,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/admin", "/api/:path*"],
+  matcher: ["/", "/admin", "/handleiding", "/api/:path*"],
 };
