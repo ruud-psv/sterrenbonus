@@ -6,12 +6,30 @@ import type { Prize } from "@/app/types";
 // decrements. When no Redis credentials are present the whole module no-ops and
 // the app falls back to the Blob counter (see lib/prizes.ts).
 //
-// Works with either the Vercel-KV env names or the Upstash ones.
+// Find the Redis REST credentials. Handles the plain Vercel-KV / Upstash names
+// as well as a custom prefix (e.g. STORAGE_KV_REST_API_URL) that the Vercel
+// Marketplace flow adds. We only match the HTTPS *REST* URL vars (never the TCP
+// REDIS_URL), so the @upstash/redis REST client always gets a usable endpoint.
+function findRestCredentials(): { url: string; token: string } | null {
+  const direct = (u?: string, t?: string) => (u && t ? { url: u, token: t } : null);
+  const known =
+    direct(process.env.KV_REST_API_URL, process.env.KV_REST_API_TOKEN) ??
+    direct(process.env.UPSTASH_REDIS_REST_URL, process.env.UPSTASH_REDIS_REST_TOKEN);
+  if (known) return known;
+
+  // Prefixed variants: any *REST_API_URL / *REDIS_REST_URL with a sibling token.
+  for (const [key, value] of Object.entries(process.env)) {
+    if (!value) continue;
+    if (!/(REST_API_URL|REDIS_REST_URL)$/.test(key)) continue;
+    const token = process.env[key.replace(/URL$/, "TOKEN")];
+    if (token) return { url: value, token };
+  }
+  return null;
+}
+
 function getRedis(): Redis | null {
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
+  const creds = findRestCredentials();
+  return creds ? new Redis(creds) : null;
 }
 
 const redis = getRedis();
