@@ -60,7 +60,7 @@ export default function PrizeReel({
       const ctx = document.createElement('canvas').getContext('2d');
       if (ctx) {
         const REF = 100;
-        ctx.font = `italic 700 ${REF}px PSVCondensed, sans-serif`;
+        ctx.font = `700 ${REF}px PSVCondensed, sans-serif`;
         let maxW = 0;
         for (const p of prizes) {
           const w = ctx.measureText(p.name.toUpperCase()).width;
@@ -202,7 +202,7 @@ export default function PrizeReel({
                 style={{
                   fontSize: `${layout.fontSize}px`,
                   fontWeight: 700,
-                  fontStyle: 'italic',
+                  fontStyle: 'normal',
                   letterSpacing: '0.03em',
                   textTransform: 'uppercase',
                   color: '#ffffff',

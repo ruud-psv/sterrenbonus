@@ -274,7 +274,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                       style={{
                         fontSize: '2.5rem',
                         fontWeight: 700,
-                        fontStyle: 'italic',
+                        fontStyle: 'normal',
                         letterSpacing: '0.02em',
                         textTransform: 'uppercase',
                         color: '#ffffff',
@@ -311,7 +311,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                       cursor: 'pointer',
                       fontSize: '1.4rem',
                       fontWeight: 900,
-                      fontStyle: 'italic',
+                      fontStyle: 'normal',
                       letterSpacing: '0.02em',
                       textTransform: 'uppercase',
                       fontFamily: 'PSVCondensed, var(--font-psv)',
