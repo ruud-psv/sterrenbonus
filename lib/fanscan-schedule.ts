@@ -13,8 +13,6 @@ const PREMIUM_DROPS: { id: string; minute: number }[] = [
   { id: "24", minute: 20 }, // Meet & Greet met Phoxy
   { id: "23", minute: 45 }, // Wedstrijdexperience Lichtstadderby
   { id: "15", minute: 70 }, // Twee tickets PSV – Villarreal CF
-  { id: "24", minute: 90 },
-  { id: "23", minute: 110 },
   { id: "10", minute: 125 }, // Gesigneerd shirt Sven Mijnans
   { id: "25", minute: 135 }, // Twee tickets PSV - Feyenoord
   { id: "14", minute: 145 }, // Twee tickets Johan Cruijff Schaal

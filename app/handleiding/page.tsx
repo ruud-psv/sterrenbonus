@@ -124,7 +124,7 @@ const HTML = `<style>
       <span class="chip">📅 <b>Za 25 juli</b></span>
       <span class="chip">🕛 <b>12:00–18:00</b></span>
       <span class="chip">🎡 <b>2 kiosks</b></span>
-      <span class="chip">🎁 <b>3.653</b> prijzen</span>
+      <span class="chip">🎁 <b>3.611</b> prijzen</span>
     </div>
   </header>
 
@@ -182,15 +182,13 @@ const HTML = `<style>
 
   <section><div class="card">
     <h2>Premies — tijdschema<span class="bar"></span></h2>
-    <p class="muted small">De 23 topprijzen vallen op vaste momenten, naar de <b>eerstvolgende draai vanaf dat tijdstip</b>. <span style="color:var(--gold)">★</span> = publiekstrekkers in de piek — mooi om aan te kondigen.</p>
+    <p class="muted small">De 21 topprijzen vallen op vaste momenten, naar de <b>eerstvolgende draai vanaf dat tijdstip</b>. <span style="color:var(--gold)">★</span> = publiekstrekkers in de piek — mooi om aan te kondigen.</p>
     <div class="twrap"><table>
       <thead><tr><th>Tijd</th><th>Prijs</th></tr></thead>
       <tbody>
         <tr><td class="time">12:20</td><td class="prize-cell">Meet &amp; Greet met Phoxy</td></tr>
         <tr><td class="time">12:45</td><td class="prize-cell">Wedstrijdexperience Lichtstadderby</td></tr>
         <tr><td class="time">13:10</td><td class="prize-cell">Twee tickets PSV – Villarreal CF</td></tr>
-        <tr><td class="time">13:30</td><td class="prize-cell">Meet &amp; Greet met Phoxy</td></tr>
-        <tr><td class="time">13:50</td><td class="prize-cell">Wedstrijdexperience Lichtstadderby</td></tr>
         <tr class="marquee"><td class="time">14:05 ★</td><td class="prize-cell">Gesigneerd shirt Sven Mijnans</td></tr>
         <tr class="marquee"><td class="time">14:15 ★</td><td class="prize-cell">Twee tickets PSV – Feyenoord</td></tr>
         <tr class="marquee"><td class="time">14:25 ★</td><td class="prize-cell">Twee tickets Johan Cruijff Schaal</td></tr>
@@ -219,16 +217,16 @@ const HTML = `<style>
     <div class="twrap"><table>
       <thead><tr><th>Tijdvak</th><th class="num">Draaien</th><th class="num">Massa</th><th class="num">Midden</th><th class="num">Premies</th><th class="num">Helaas</th></tr></thead>
       <tbody>
-        <tr><td class="time">12–13</td><td class="num">261</td><td class="num">233</td><td class="num">24</td><td class="num">2</td><td class="num">2</td></tr>
-        <tr><td class="time">13–14</td><td class="num">373</td><td class="num">345</td><td class="num">25</td><td class="num">3</td><td class="num">0</td></tr>
+        <tr><td class="time">12–13</td><td class="num">261</td><td class="num">240</td><td class="num">19</td><td class="num">2</td><td class="num">0</td></tr>
+        <tr><td class="time">13–14</td><td class="num">373</td><td class="num">349</td><td class="num">23</td><td class="num">1</td><td class="num">0</td></tr>
         <tr><td class="time">14–15</td><td class="num">597</td><td class="num">548</td><td class="num">43</td><td class="num">6</td><td class="num">0</td></tr>
-        <tr><td class="time">15–16</td><td class="num">597</td><td class="num">544</td><td class="num">47</td><td class="num">6</td><td class="num">0</td></tr>
-        <tr><td class="time">16–17</td><td class="num">410</td><td class="num">383</td><td class="num">23</td><td class="num">4</td><td class="num">0</td></tr>
-        <tr><td class="time">17–18</td><td class="num">261</td><td class="num">239</td><td class="num">20</td><td class="num">2</td><td class="num">0</td></tr>
-        <tr class="total"><td>Totaal</td><td class="num">2.499</td><td class="num">2.292</td><td class="num">182</td><td class="num">23</td><td class="num">2</td></tr>
+        <tr><td class="time">15–16</td><td class="num">597</td><td class="num">542</td><td class="num">49</td><td class="num">6</td><td class="num">0</td></tr>
+        <tr><td class="time">16–17</td><td class="num">410</td><td class="num">382</td><td class="num">24</td><td class="num">4</td><td class="num">0</td></tr>
+        <tr><td class="time">17–18</td><td class="num">261</td><td class="num">247</td><td class="num">12</td><td class="num">2</td><td class="num">0</td></tr>
+        <tr class="total"><td>Totaal</td><td class="num">2.499</td><td class="num">2.308</td><td class="num">170</td><td class="num">21</td><td class="num">0</td></tr>
       </tbody>
     </table></div>
-    <p class="small muted" style="margin-top:12px">Bij een <b>drukke</b> dag (~4.000 draaien) springt "helaas" juist aan in de piek om de voorraad te rekken — dan wordt bijna alles uitgedeeld. In beide gevallen vallen alle 23 premies.</p>
+    <p class="small muted" style="margin-top:12px">Bij een <b>drukke</b> dag (~4.000 draaien) springt "helaas" juist aan in de piek om de voorraad te rekken — dan wordt bijna alles uitgedeeld. In beide gevallen vallen alle 21 premies.</p>
   </div></section>
 
   <section><div class="card">
@@ -241,15 +239,15 @@ const HTML = `<style>
         <tr><td class="prize-cell">Phoxy Gloeilampje</td><td><span class="tag massa">Veel</span></td><td class="num">500</td></tr>
         <tr><td class="prize-cell">PSV Strandbal</td><td><span class="tag massa">Veel</span></td><td class="num">300</td></tr>
         <tr><td class="prize-cell">PSV Museum (2 pers.)</td><td><span class="tag midden">Midden</span></td><td class="num">100</td></tr>
-        <tr><td class="prize-cell">Puma Gymtas</td><td><span class="tag midden">Midden</span></td><td class="num">100</td></tr>
+        <tr><td class="prize-cell">Puma Gymtas</td><td><span class="tag midden">Midden</span></td><td class="num">60</td></tr>
         <tr><td class="prize-cell">FANstore Giftcard €5</td><td><span class="tag midden">Midden</span></td><td class="num">50</td></tr>
         <tr><td class="prize-cell">Jaar gratis Membership</td><td><span class="tag midden">Midden</span></td><td class="num">10</td></tr>
         <tr><td class="prize-cell">PSV Stadiontour (2 pers.)</td><td><span class="tag midden">Midden</span></td><td class="num">10</td></tr>
         <tr><td class="prize-cell">PSV Goodie</td><td><span class="tag midden">Midden</span></td><td class="num">10</td></tr>
         <tr><td class="prize-cell">Tickets Villarreal CF (2×)</td><td><span class="tag premie">Top</span></td><td class="num">3</td></tr>
         <tr><td class="prize-cell">Tickets Lichtstadderby (2×)</td><td><span class="tag premie">Top</span></td><td class="num">3</td></tr>
-        <tr><td class="prize-cell">Wedstrijdexperience derby</td><td><span class="tag premie">Top</span></td><td class="num">3</td></tr>
-        <tr><td class="prize-cell">Meet &amp; Greet met Phoxy</td><td><span class="tag premie">Top</span></td><td class="num">3</td></tr>
+        <tr><td class="prize-cell">Wedstrijdexperience derby</td><td><span class="tag premie">Top</span></td><td class="num">2</td></tr>
+        <tr><td class="prize-cell">Meet &amp; Greet met Phoxy</td><td><span class="tag premie">Top</span></td><td class="num">2</td></tr>
         <tr><td class="prize-cell">Gesigneerd shirt Sven Mijnans</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
         <tr><td class="prize-cell">Gesigneerd shirt Mauro Júnior</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
         <tr><td class="prize-cell">Gesigneerd shirt Ruben van Bommel</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
@@ -261,7 +259,7 @@ const HTML = `<style>
         <tr><td class="prize-cell">Spelersbus naar uitwedstrijd</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
         <tr><td class="prize-cell">Besloten training (2 pers.)</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
         <tr><td class="prize-cell">Rondleiding profzijde</td><td><span class="tag premie">Top</span></td><td class="num">1</td></tr>
-        <tr class="total"><td>Totaal</td><td></td><td class="num">3.653</td></tr>
+        <tr class="total"><td>Totaal</td><td></td><td class="num">3.611</td></tr>
       </tbody>
     </table></div>
   </div></section>

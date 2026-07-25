@@ -3,7 +3,7 @@
   {"id": "2", "name": "PSV Strandbal", "active": true, "stock": 300, "initialStock": 300},
   {"id": "3", "name": "PSV Plaktattoo", "active": true, "stock": 1000, "initialStock": 1000},
   {"id": "4", "name": "Phoxy Gloeilampje", "active": true, "stock": 500, "initialStock": 500},
-  {"id": "5", "name": "Puma Gymtas", "active": true, "stock": 100, "initialStock": 100},
+  {"id": "5", "name": "Puma Gymtas", "active": true, "stock": 60, "initialStock": 60},
   {"id": "6", "name": "PSV FANstore Giftcard t.w.v. €5,-", "active": true, "stock": 50, "initialStock": 50},
   {"id": "7", "name": "Thuisshirt", "active": true, "stock": 1, "initialStock": 1},
   {"id": "8", "name": "Uitshirt", "active": true, "stock": 1, "initialStock": 1},
@@ -21,7 +21,7 @@
   {"id": "20", "name": "PSV Spelersbus naar je uitwedstrijd", "active": true, "stock": 1, "initialStock": 1},
   {"id": "21", "name": "Twee personen een besloten training bezoeken", "active": true, "stock": 1, "initialStock": 1},
   {"id": "22", "name": "Exclusieve rondleiding profzijde", "active": true, "stock": 1, "initialStock": 1},
-  {"id": "23", "name": "Wedstrijdexperience Lichtstadderby", "active": true, "stock": 3, "initialStock": 3},
-  {"id": "24", "name": "Meet & Greet met Phoxy", "active": true, "stock": 3, "initialStock": 3},
+  {"id": "23", "name": "Wedstrijdexperience Lichtstadderby", "active": true, "stock": 2, "initialStock": 2},
+  {"id": "24", "name": "Meet & Greet met Phoxy", "active": true, "stock": 2, "initialStock": 2},
   {"id": "25", "name": "Twee tickets PSV - Feyenoord", "active": true, "stock": 1, "initialStock": 1}
 ]
