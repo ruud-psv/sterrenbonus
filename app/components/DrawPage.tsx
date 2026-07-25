@@ -278,7 +278,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                         letterSpacing: '0.02em',
                         textTransform: 'uppercase',
                         color: '#ffffff',
-                        fontFamily: 'PSVBranding, var(--font-psv)',
+                        fontFamily: 'PSVCondensed, var(--font-psv)',
                         textAlign: 'center',
                         margin: 0,
                         opacity: isHelaas ? 0.85 : 1,
@@ -314,7 +314,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                       fontStyle: 'italic',
                       letterSpacing: '0.02em',
                       textTransform: 'uppercase',
-                      fontFamily: 'PSVBranding, var(--font-psv)',
+                      fontFamily: 'PSVCondensed, var(--font-psv)',
                       boxShadow: `0 8px 30px ${primary}66`,
                     }}
                   >

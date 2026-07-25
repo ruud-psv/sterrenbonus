@@ -18,6 +18,15 @@
   font-display: swap;
 }
 
+/* PSV Condensed Bold */
+@font-face {
+  font-family: 'PSVCondensed';
+  src: url('/fonts/PSVCondensed-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --psv-red:    #C8102E;
   --psv-red-dk: #9B0020;
