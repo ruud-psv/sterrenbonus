@@ -284,7 +284,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                         opacity: isHelaas ? 0.85 : 1,
                       }}
                     >
-                      {isHelaas ? 'Helaas, volgende keer beter!' : 'Gefeliciteerd!'}
+                      {isHelaas ? 'Neem een vlaggetje mee!' : 'Gefeliciteerd!'}
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -318,7 +318,7 @@ export default function DrawPage({ theme }: DrawPageProps) {
                       boxShadow: `0 8px 30px ${primary}66`,
                     }}
                   >
-                    Nog een keer
+                    Druk op de knop
                   </motion.button>
                 )}
               </AnimatePresence>
