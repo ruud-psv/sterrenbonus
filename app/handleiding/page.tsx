@@ -10,15 +10,16 @@ const HTML = `<style>
   }
   * { box-sizing:border-box; }
   html { -webkit-text-size-adjust:100%; }
-  body { margin:0; color:var(--text); background:var(--red);
+  body { margin:0; position:relative; color:var(--text); background:var(--red);
     font-family:"PSVText","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
     font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 
-  /* Fixed PSV-pattern backdrop (works on iOS, unlike background-attachment:fixed) */
-  .bg { position:fixed; inset:0; z-index:-2;
-    background:#e82026 url('/fandag-bg.jpg') center 25%/cover no-repeat; }
+  /* PSV-pattern backdrop over de hele pagina — mee-scrollend en herhaald, dus
+     geen apart rood blok bovenaan. */
+  .bg { position:absolute; inset:0; z-index:-2;
+    background:#e82026 url('/fandag-bg.jpg') top center / 100% auto repeat; }
   .bg::after { content:""; position:absolute; inset:0;
-    background:radial-gradient(120% 90% at 50% 0%, rgba(0,0,0,.18), rgba(0,0,0,.42)); }
+    background:rgba(0,0,0,.30); }
 
   .wrap { max-width:760px; margin:0 auto; padding:22px 16px 72px; }
 
