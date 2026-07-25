@@ -158,7 +158,7 @@ const HTML = `<style>
 
   <section><div class="card">
     <h2>Hoe het werkt<span class="bar"></span></h2>
-    <p>Fans draaien aan het rad op een van de kiosks. Elke draai geeft óf een prijs, óf <em>"helaas, volgende keer beter"</em>. Zo blijft het spannend en zijn er de hele dag prijzen te winnen.</p>
+    <p>Fans draaien aan het rad op een van de kiosks. Elke draai geeft óf een prijs, óf géén prijs — dan verschijnt <em>"Neem een vlaggetje mee"</em> en geef je de fan een vlaggetje. Zo blijft het spannend en zijn er de hele dag prijzen te winnen.</p>
 
     <h3>Drie soorten prijzen</h3>
     <ul class="clean">
@@ -269,8 +269,8 @@ const HTML = `<style>
     <h2>Op de dag — bij de kiosk<span class="bar"></span></h2>
     <ol class="steps">
       <li>Fan drukt op <b>START</b> — het rad draait en landt op een prijs of "helaas".</li>
-      <li>Prijs tonen/overhandigen. Bij een topprijs: mooi moment om te vieren 🎉.</li>
-      <li>Druk op <b>"Nog een keer"</b> om direct de volgende fan te bedienen.</li>
+      <li>Prijs tonen/overhandigen. Bij een topprijs: mooi moment om te vieren 🎉. Bij géén prijs ("Neem een vlaggetje mee"): geef de fan een vlaggetje.</li>
+      <li>Druk op <b>de knop onderaan</b> om direct de volgende fan te bedienen.</li>
     </ol>
     <p class="small muted" style="margin-top:12px">Voorraad checken of bijstellen kan via het <b>beheer</b> (zie links). Werkt een kiosk even niet? De andere draait door; ververs anders de pagina.</p>
   </div></section>
